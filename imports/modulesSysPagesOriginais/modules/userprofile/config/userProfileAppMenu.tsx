@@ -2,10 +2,10 @@ import React from 'react';
 import { IAppMenu } from '../../../modules/modulesTypings';
 import SysIcon from '../../../ui/components/sysIcon/sysIcon';
 
-export const exampleMenuItemList: (IAppMenu | null)[] = [
+export const userProfileMenuItemList: (IAppMenu | null)[] = [
 	{
-		path: '/example',
-		name: 'ToDoList',
-		icon: <SysIcon name={'description'} />
+		path: '/userprofile',
+		name: 'Usuários',
+		icon: <SysIcon name={'groups'} />
 	}
 ];

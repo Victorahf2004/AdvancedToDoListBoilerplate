@@ -43,9 +43,9 @@ export const exampleSch: ISchema<IExample> = {
 		defaultValue: '',
 		optional: false,
 		options: () => [
-			{ value: 'Categoria A', label: 'Cadastrada' },
-			{ value: 'Categoria B', label: 'Em Andamento' },
-			{ value: 'Categoria C', label: 'Concluída' }
+			{ value: 'Categoria A', label: 'Categoria A' },
+			{ value: 'Categoria B', label: 'Categoria B' },
+			{ value: 'Categoria C', label: 'Categoria C' }
 		]
 	},
 	typeMulti: {

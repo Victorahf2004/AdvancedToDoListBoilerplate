@@ -5,7 +5,7 @@ import SysIcon from '../../../ui/components/sysIcon/sysIcon';
 export const exampleMenuItemList: (IAppMenu | null)[] = [
 	{
 		path: '/example',
-		name: 'ToDoList',
-		icon: <SysIcon name={'description'} />
+		name: 'Exemplo',
+		icon: <SysIcon name={'dashboard'} />
 	}
 ];
