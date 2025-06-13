@@ -7,5 +7,5 @@ export const toDosMenuItemList: (IAppMenu | null)[] = [
 		path: '/toDos',
 		name: 'toDos',
 		icon: <SysIcon name={'description'} />
-	}
+	},
 ];

@@ -1,4 +1,4 @@
-import Home from '../../sysPages/pages/home/home';
+import HomeController from '../../sysPages/pages/home/homeController';
 import { SignUp } from '../../sysPages/pages/signUp/signUp';
 import { EmailVerify } from '../../sysPages/pages/emailVerify/emailVerify';
 import { ResetPassword } from '../../sysPages/pages/resetPassword/resetPassword';
@@ -10,13 +10,13 @@ import { HomeResources, SysFormTestPageResources } from './resources';
 import SysFormPlayground from '../../sysPages/pages/sysFormPlayground/sysFormPlayground';
 
 export const pagesRouterList: (IRoute | null)[] = [
-	// {
-	// 	path: '/',
-	// 	exact: true,
-	// 	component: Home,
-	// 	isProtected: true,
-	// 	resources: [HomeResources.HOME_VIEW]
-	// },
+	{
+		path: '/',
+		exact: true,
+		component: HomeController,
+		isProtected: true,
+		resources: [HomeResources.HOME_VIEW]
+	},
 	{
 		path: '/sysFormTests',
 		component: SysFormPlayground,

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import HomeSectionNotificacoes from './sections/notificacoes';
 import HomeSectionDialogs from './sections/dialogs';
-import HomeStyles from './homeStyle';
+// import HomeStyles from './homeStyle';
 import HomeSectionComponents from "/imports/sysPages/pages/home/sections/componentTests";
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { TarefasRecentes } from './sections/TarefasRecentes';
