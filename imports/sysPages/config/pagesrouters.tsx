@@ -10,13 +10,13 @@ import { HomeResources, SysFormTestPageResources } from './resources';
 import SysFormPlayground from '../../sysPages/pages/sysFormPlayground/sysFormPlayground';
 
 export const pagesRouterList: (IRoute | null)[] = [
-	{
-		path: '/',
-		exact: true,
-		component: Home,
-		isProtected: true,
-		resources: [HomeResources.HOME_VIEW]
-	},
+	// {
+	// 	path: '/',
+	// 	exact: true,
+	// 	component: Home,
+	// 	isProtected: true,
+	// 	resources: [HomeResources.HOME_VIEW]
+	// },
 	{
 		path: '/sysFormTests',
 		component: SysFormPlayground,
