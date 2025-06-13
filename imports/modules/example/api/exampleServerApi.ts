@@ -17,9 +17,10 @@ class ExampleServerApi extends ProductServerBase<IExample> {
 
 		this.addPublication(
 			'exampleList',
-			(filter = {}) => {
+			(filter = {}, options = {}) => {
 				return this.defaultListCollectionPublication(filter, {
-					projection: { title: 1, type: 1, typeMulti: 1, createdat: 1 }
+					...options,
+					projection: { title: 1, type: 1, typeMulti: 1, createdat: 1 },
 				});
 			},
 		);
@@ -48,6 +49,10 @@ class ExampleServerApi extends ProductServerBase<IExample> {
 					fields: { username: 1 }
 				});
 				return {...doc, username: user?.username || "ERROR"};
+			// async (doc: IExample & { nomeUsuario: string }) => {
+			// 	const userProfileDoc = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
+			// 	return { ...doc, owner: "Victor" };
+			// } Versão que Gustavo explicou como funciona o publicação transformada
 			}
 		);
 
