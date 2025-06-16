@@ -21,8 +21,8 @@ export const HomeView: React.FC = () => {
             <List>
                 {(controller.todoList).map((task) => (
                     <React.Fragment key={task._id}>
-                        {task.title}
-                        {task.owner}
+                        {task.title} {" "}
+                        {task.owner} {"\n"}
                     </React.Fragment>
                 ))}
             </List>

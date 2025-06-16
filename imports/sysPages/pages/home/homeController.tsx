@@ -46,8 +46,9 @@ const HomeController = () => {
         [sortProperties.field]: sortProperties.sortAscending ? 1 : -1
     };
 
+    const numeroDeTasksPaginaInicial = 5;
     const { loading, toDos } = useTracker(() => {
-        const subHandle = toDosApi.subscribe('toDosList', {}, {sort: {createdat: -1}});
+        const subHandle = toDosApi.subscribe('toDosList', {}, {sort: {lastupdate: -1}, limit: numeroDeTasksPaginaInicial});
 
         const toDos = subHandle?.ready() ? toDosApi.find({}).fetch() : [];
         return {
