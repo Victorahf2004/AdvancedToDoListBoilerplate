@@ -174,4 +174,5 @@ export interface IToDos extends IDoc {
 	slider: number;
 	statusRadio: string;
 	statusToggle: boolean;
+	owner: string;
 }

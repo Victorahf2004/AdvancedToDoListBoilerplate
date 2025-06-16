@@ -3,7 +3,7 @@ import { Recurso } from '../config/recursos';
 import { toDosSch, IToDos } from './toDosSch';
 import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
 import { ProductServerBase } from '/imports/api/productServerBase';
-
+import { IUserProfile } from '../../userprofile/api/userProfileSch';
 // endregion
 
 class ToDosServerApi extends ProductServerBase<IToDos> {
@@ -19,12 +19,12 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 			'toDosList',
 			(filter = {}) => {
 				return this.defaultListCollectionPublication(filter, {
-					projection: { title: 1, type: 1, typeMulti: 1, createdat: 1 }
+					projection: { title: 1, type: 1, typeMulti: 1, createdat: 1, createdby: 1 }
 				});
 			},
-			(doc: IToDos & { nomeUsuario: string }) => {
-				const userProfileDoc = userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
-				return { ...doc };
+			async (doc: IToDos & { nomeUsuario: string }) => {
+				const userProfileDoc: (Partial<IUserProfile>) = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
+				return { ...doc, owner: userProfileDoc ? userProfileDoc.username : 'Sem autor' };
 			}
 		);
 
