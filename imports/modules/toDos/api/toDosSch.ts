@@ -43,9 +43,8 @@ export const toDosSch: ISchema<IToDos> = {
 		defaultValue: '',
 		optional: false,
 		options: () => [
-			{ value: 'Categoria A', label: 'Categoria A' },
-			{ value: 'Categoria B', label: 'Categoria B' },
-			{ value: 'Categoria C', label: 'Categoria C' }
+			{ value: 'Não Concluída', label: 'Não Concluída' },
+			{ value: 'Concluída', label: 'Concluída' },
 		]
 	},
 	typeMulti: {

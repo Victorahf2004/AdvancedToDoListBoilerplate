@@ -4,6 +4,10 @@ import HomeStyles from './homeStyles';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { HomeControllerContext } from './homeController';
 import { List } from '@mui/material';
+import SysTaskList from '/imports/ui/components/sysTaskList/sysTaskList';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
 export const HomeView: React.FC = () => {
     const { Container, Header } = HomeStyles;
@@ -18,14 +22,8 @@ export const HomeView: React.FC = () => {
                 </Typography>
             </Header>
             <Typography variant="h3">Atividades Recentes </Typography>
-            <List>
-                {(controller.todoList).map((task) => (
-                    <React.Fragment key={task._id}>
-                        {task.title} {" "}
-                        {task.owner} {"\n"}
-                    </React.Fragment>
-                ))}
-            </List>
+            <SysTaskList tasks={controller.todoList} />
+            <SysButton onClick={controller.onTaskButtonClick}> {"Ir para Tarefas >>>"} </SysButton>
         </Container>
     );
 }

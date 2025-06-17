@@ -18,6 +18,7 @@ interface IInitialConfig {
 interface IHomeContollerContext {
     onAddButtonClick: () => void;
     onDeleteButtonClick: (row: any) => void;
+    onTaskButtonClick: () => void;
     todoList: IToDos[];
     loading: boolean;
     onChangeTextField: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -58,6 +59,9 @@ const HomeController = () => {
         };
     }, [config]);
 
+    const onTaskButtonClick = useCallback(() => {
+        navigate("/toDos");
+    }, [])
     const onAddButtonClick = useCallback(() => {
         const newDocumentId = nanoid();
         navigate(`/toDos/create/${newDocumentId}`);
@@ -97,6 +101,7 @@ const HomeController = () => {
         () => ({
             onAddButtonClick,
             onDeleteButtonClick,
+            onTaskButtonClick,
             todoList: toDos,
             loading,
             onChangeTextField,
