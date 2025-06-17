@@ -16,8 +16,7 @@ interface IInitialConfig {
 
 interface IToDosListContollerContext {
 	onAddButtonClick: () => void;
-	onDeleteButtonClick: (task: any) => void;
-	onEditButtonClick: (task: any) => void;
+	onDeleteButtonClick: (row: any) => void;
 	todoList: IToDos[];
 	schema: ISchema<any>;
 	loading: boolean;
@@ -65,12 +64,8 @@ const ToDosListController = () => {
 		navigate(`/toDos/create/${newDocumentId}`);
 	}, []);
 
-	const onEditButtonClick = useCallback((task: any) => {
-		navigate('/toDos/edit/' + task._id);
-	}, []);
-
-	const onDeleteButtonClick = useCallback((task: any) => {
-		toDosApi.remove(task);
+	const onDeleteButtonClick = useCallback((row: any) => {
+		toDosApi.remove(row);
 	}, []);
 
 	const onChangeTextField = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,7 +98,6 @@ const ToDosListController = () => {
 		() => ({
 			onAddButtonClick,
 			onDeleteButtonClick,
-			onEditButtonClick,
 			todoList: toDoss,
 			schema: toDosSchReduzido,
 			loading,

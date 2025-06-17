@@ -5,15 +5,17 @@ import { IToDos } from "/imports/modules/toDos/api/toDosSch";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import SysTaskListItem from "./sysTaskListItem";
+import Divider from "@mui/material/Divider";
 import React, {useEffect} from "react";
 
-const SysTaskList: React.FC<{tasks: IToDos[]}> = ({ tasks }) => {
+const SysTaskList: React.FC<{tasks: IToDos[], telaInicial: boolean, onEdit: any, onDelete: any}> = ({ tasks, telaInicial, onEdit, onDelete }) => {
 
     return (
         <List>
             {tasks.map((task) => (
-                <SysTaskListItem task={task} />
+                <SysTaskListItem task={task} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
             ))}
+            <Divider />
         </List>
     )
 }

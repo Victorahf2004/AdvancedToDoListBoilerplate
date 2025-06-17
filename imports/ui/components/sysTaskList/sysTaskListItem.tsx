@@ -6,10 +6,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useTracker } from 'meteor/react-meteor-data'; 
 import React, {useEffect} from "react";
+import { SysButton } from "/imports/ui/components/SimpleFormFields/SysButton/SysButton";
+import SysIcon from "../sysIcon/sysIcon";
 
-const SysTaskListItem: React.FC<{task: IToDos}> = ({ task }) => {
+const SysTaskListItem: React.FC<{task: IToDos, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ task, telaInicial, onEdit, onDelete }) => {
 
-    const situacao: boolean = useTracker(() => {
+    let situacao: boolean = useTracker(() => {
         return task.type === "Concluída";
     })
 
@@ -17,12 +19,22 @@ const SysTaskListItem: React.FC<{task: IToDos}> = ({ task }) => {
         <ListItem key={task._id}>
             <FormControlLabel
                 control={
-                    <Checkbox checked={situacao} />
+                    <Checkbox checked={situacao} onChange={() => {situacao = !situacao}}/>
                 }
                 label={
                     <ListItemText primary={task.title} secondary={`Criado por: ${task.owner}`} />
                 }
             />
+            {!telaInicial && (
+                <>
+                <SysButton onClick={() => onEdit(task)}>
+                    <SysIcon name={"edit"} />
+                </SysButton>
+                <SysButton onClick={() => onDelete(task)}>
+                    <SysIcon name={"delete"} />
+                </SysButton>
+                </>
+            )}
         </ListItem>
     )
 }
