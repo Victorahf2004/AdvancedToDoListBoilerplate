@@ -1,4 +1,4 @@
-import Home from '../../sysPages/pages/home/home';
+import HomeController from '../../sysPages/pages/home/homeController';
 import { SignUp } from '../../sysPages/pages/signUp/signUp';
 import { EmailVerify } from '../../sysPages/pages/emailVerify/emailVerify';
 import { ResetPassword } from '../../sysPages/pages/resetPassword/resetPassword';
@@ -13,7 +13,7 @@ export const pagesRouterList: (IRoute | null)[] = [
 	{
 		path: '/',
 		exact: true,
-		component: Home,
+		component: HomeController,
 		isProtected: true,
 		resources: [HomeResources.HOME_VIEW]
 	},
