@@ -4,7 +4,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { IToDos } from "/imports/modules/toDos/api/toDosSch";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import SysTaskListItem from "./sysTaskListItem";
+import SysTaskListItemController from "./sysTaskListItemController";
 import Divider from "@mui/material/Divider";
 import React, {useEffect} from "react";
 
@@ -13,7 +13,7 @@ const SysTaskList: React.FC<{tasks: IToDos[], telaInicial: boolean, onEdit: any,
     return (
         <List>
             {tasks.map((task) => (
-                <SysTaskListItem key={task._id} taskId={task._id} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
+                <SysTaskListItemController key={task._id} taskId={task._id} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
             ))}
             <Divider />
         </List>

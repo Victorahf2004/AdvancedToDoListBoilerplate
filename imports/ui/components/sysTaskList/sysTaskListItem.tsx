@@ -11,42 +11,18 @@ import { toDosApi } from "/imports/modules/toDos/api/toDosApi";
 import AppLayoutContext from "/imports/app/appLayoutProvider/appLayoutContext";
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import SysIcon from "../sysIcon/sysIcon";
+import { SysTaskListItemControllerContext } from "./sysTaskListItemController";
+import { SysTabs } from "../sysTabs/sysTabs";
 
 const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
-    const task = useTracker(() => toDosApi.findOne({_id: taskId}));
-    let situacao: boolean = task.type === "Concluída";
-
-    const { showNotification } = useContext(AppLayoutContext);
-
-    const gerarNovaTask = () => {
-        let novoTipo: string = !situacao? "Concluída" : "Não Concluída";
-        const novaTask: any = {
-            ...task,
-            type: novoTipo,
-        }
-        toDosApi["update"](novaTask, (e: IMeteorError) => {
-            if (!e) {
-                showNotification({
-                    type: 'success',
-                    title: 'Operação realizada!',
-                    message: `O exemplo foi atualizado com sucesso!`
-                });
-                console.log(`Task atualizada: ${novaTask}`);
-            } else {
-                showNotification({
-                    type: 'error',
-                    title: 'Operação não realizada!',
-                    message: `Erro ao realizar a operação`
-                });
-            }
-        });
-    }
-
+    
+    const {task, situacao, checkBoxClick} = useContext(SysTaskListItemControllerContext);
+    
     return (
         <ListItem>
             <FormControlLabel
                 control={
-                    <Checkbox checked={situacao} onChange={gerarNovaTask} />
+                    <Checkbox checked={situacao} onChange={checkBoxClick} />
                 }
                 label={
                     <ListItemText primary={task.title} secondary={`Criado por: ${task.owner}`} />
