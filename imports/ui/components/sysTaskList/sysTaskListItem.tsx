@@ -13,11 +13,14 @@ import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import SysIcon from "../sysIcon/sysIcon";
 import { SysTaskListItemControllerContext } from "./sysTaskListItemController";
 import { SysTabs } from "../sysTabs/sysTabs";
+import ButtonBase from '@mui/material/ButtonBase';
+import { useNavigate } from 'react-router-dom';
 
 const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
     
-    const {task, situacao, checkBoxClick} = useContext(SysTaskListItemControllerContext);
-    
+    const {task, situacao, checkBoxClick, seeTaskInfo} = useContext(SysTaskListItemControllerContext);
+    const navigate = useNavigate();
+
     return (
         <ListItem>
             <FormControlLabel
@@ -25,7 +28,9 @@ const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolea
                     <Checkbox checked={situacao} onChange={checkBoxClick} />
                 }
                 label={
-                    <ListItemText primary={task.title} secondary={`Criado por: ${task.owner}`} />
+                    <ButtonBase onClick={() => seeTaskInfo(task)}>
+                        <ListItemText primary={task.title} secondary={`Criado por: ${task.owner}`} />
+                    </ButtonBase>
                 }
             />
             {!telaInicial && (

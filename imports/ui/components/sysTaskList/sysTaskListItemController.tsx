@@ -21,6 +21,7 @@ interface ISysTaskListItemControllerContext {
     task: Partial<IToDos>;
     situacao: boolean;
     checkBoxClick: () => void;
+    seeTaskInfo: (task: Partial<IToDos>) => void;
 }
 
 export const SysTaskListItemControllerContext = React.createContext<ISysTaskListItemControllerContext>(
@@ -31,6 +32,7 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
 
     const task: Partial<IToDos> = useTracker(() => toDosApi.findOne({_id: taskId}));
     let situacao: boolean = task.type === "Concluída";
+    const navigate = useNavigate();
     const { showNotification } = useContext(AppLayoutContext);
 
     const checkBoxClick = () => {
@@ -58,11 +60,16 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
         });
     }
 
+    const seeTaskInfo = useCallback((tarefa: any) => {
+        navigate('/toDos/view/' + tarefa._id);
+    }, []);
+
     const providerValues: ISysTaskListItemControllerContext = useMemo(
         () => ({
             task,
             situacao,
             checkBoxClick,
+            seeTaskInfo,
         }),
         [task]
     );
