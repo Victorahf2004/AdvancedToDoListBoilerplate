@@ -22,7 +22,7 @@ export const HomeView: React.FC = () => {
                 </Typography>
             </Header>
             <Typography variant="h3">Atividades Recentes </Typography>
-            <SysTaskList tasks={controller.todoList} />
+            <SysTaskList tasks={controller.todoList} telaInicial={true} onEdit={false} onDelete={false}/>
             <SysButton onClick={controller.onTaskButtonClick}> {"Ir para Tarefas >>>"} </SysButton>
         </Container>
     );

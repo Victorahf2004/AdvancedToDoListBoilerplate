@@ -232,7 +232,7 @@ export class ApiBase<Doc extends IDoc> {
 				newObj[key] = docObj[key];
 			}
 		});
-
+		console.log('Update Object:', newObj);
 		return this.callMethod('update', newObj, callback);
 	}
 

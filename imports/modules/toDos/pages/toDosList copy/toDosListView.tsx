@@ -13,7 +13,6 @@ import SysTextField from '/imports/ui/components/sysFormFields/sysTextField/sysT
 import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 import SysTaskList from '/imports/ui/components/sysTaskList/sysTaskList';
-import { SysTabs } from '/imports/ui/components/sysTabs/sysTabs';
 
 const ToDosListView = () => {
 	const controller = React.useContext(ToDosListControllerContext);
@@ -30,7 +29,6 @@ const ToDosListView = () => {
 	return (
 		<Container>
 			<Typography variant="h5">Testeeeeeeeeee</Typography>
-			<SysTabs abas={controller.abas} value={controller.valueTab} handleChange={controller.handleTabChange}/>
 			<SearchContainer>
 				<SysTextField
 					name="search"
@@ -53,7 +51,27 @@ const ToDosListView = () => {
 				</LoadingContainer>
 			) : (
 				<Box sx={{ width: '100%' }}>
-					<SysTaskList tasks={controller.todoList} telaInicial={false} onEdit={controller.onEditButtonClick} onDelete={controller.onDeleteButtonClick}/>
+					<ComplexTable
+						data={controller.todoList}
+						schema={controller.schema}
+						onRowClick={(row) => navigate('/toDos/view/' + row.id)}
+						searchPlaceholder={'Pesquisar exemplo'}
+						onEdit={(row) => navigate('/toDos/edit/' + row._id)}
+						onDelete={(row) => {
+							DeleteDialog({
+								showDialog: sysLayoutContext.showDialog,
+								closeDialog: sysLayoutContext.closeDialog,
+								title: `Excluir dado ${row.title}`,
+								message: `Tem certeza que deseja excluir o arquivo ${row.title}?`,
+								onDeleteConfirm: () => {
+									controller.onDeleteButtonClick(row);
+									sysLayoutContext.showNotification({
+										message: 'Excluído com sucesso!'
+									});
+								}
+							});
+						}}
+					/>
 				</Box>
 			)}
 

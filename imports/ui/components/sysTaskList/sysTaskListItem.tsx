@@ -5,24 +5,44 @@ import { IToDos } from "/imports/modules/toDos/api/toDosSch";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useTracker } from 'meteor/react-meteor-data'; 
-import React, {useEffect} from "react";
+import React, { createContext, useCallback, useContext } from 'react';
+import { SysButton } from "/imports/ui/components/SimpleFormFields/SysButton/SysButton";
+import { toDosApi } from "/imports/modules/toDos/api/toDosApi";
+import AppLayoutContext from "/imports/app/appLayoutProvider/appLayoutContext";
+import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
+import SysIcon from "../sysIcon/sysIcon";
+import { SysTaskListItemControllerContext } from "./sysTaskListItemController";
+import { SysTabs } from "../sysTabs/sysTabs";
+import ButtonBase from '@mui/material/ButtonBase';
+import { useNavigate } from 'react-router-dom';
 
-const SysTaskListItem: React.FC<{task: IToDos}> = ({ task }) => {
-
-    const situacao: boolean = useTracker(() => {
-        return task.type === "Concluída";
-    })
+const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
+    
+    const {task, situacao, checkBoxClick, seeTaskInfo} = useContext(SysTaskListItemControllerContext);
+    const navigate = useNavigate();
 
     return (
-        <ListItem key={task._id}>
+        <ListItem>
             <FormControlLabel
                 control={
-                    <Checkbox checked={situacao} />
+                    <Checkbox checked={situacao} onChange={checkBoxClick} />
                 }
                 label={
-                    <ListItemText primary={task.title} secondary={`Criado por: ${task.owner}`} />
+                    <ButtonBase onClick={() => seeTaskInfo(task)}>
+                        <ListItemText primary={task.title} secondary={`Criado por: ${task.owner}`} />
+                    </ButtonBase>
                 }
             />
+            {!telaInicial && (
+                <>
+                <SysButton onClick={() => onEdit(task)}>
+                    <SysIcon name={"edit"} />
+                </SysButton>
+                <SysButton onClick={() => onDelete(task)}>
+                    <SysIcon name={"delete"} />
+                </SysButton>
+                </>
+            )}
         </ListItem>
     )
 }
