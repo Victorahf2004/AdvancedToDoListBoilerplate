@@ -13,6 +13,7 @@ import SysTextField from '/imports/ui/components/sysFormFields/sysTextField/sysT
 import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 import SysTaskList from '/imports/ui/components/sysTaskList/sysTaskList';
+import { SysTabs } from '/imports/ui/components/sysTabs/sysTabs';
 
 const ToDosListView = () => {
 	const controller = React.useContext(ToDosListControllerContext);
@@ -29,6 +30,7 @@ const ToDosListView = () => {
 	return (
 		<Container>
 			<Typography variant="h5">Testeeeeeeeeee</Typography>
+			<SysTabs abas={controller.abas} value={controller.valueTab} handleChange={controller.handleTabChange}/>
 			<SearchContainer>
 				<SysTextField
 					name="search"

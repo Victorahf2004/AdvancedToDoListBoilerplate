@@ -12,7 +12,7 @@ const {
 /**
  * Interface para representar uma aba em um sistema de abas.
  */
-interface IAba {
+export interface IAba {
 	/** O rótulo da aba. */
 	label: string;
 	/** O valor associado à aba. */
