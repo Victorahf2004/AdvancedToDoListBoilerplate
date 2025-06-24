@@ -8,6 +8,7 @@ import { IToDos } from '../../api/toDosSch';
 import { toDosApi } from '../../api/toDosApi';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { IAba } from '/imports/ui/components/sysTabs/sysTabs';
+import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -46,6 +47,7 @@ const initialConfig = {
 const ToDosListController = () => {
 	const [config, setConfig] = React.useState<IInitialConfig>(initialConfig);
 	const { user } = useContext<IAuthContext>(AuthContext);
+	const { showNotification } = useContext(AppLayoutContext);
 	const { title, type, typeMulti } = toDosApi.getSchema();
 	const toDosSchReduzido = { title, type, typeMulti, createdat: { type: Date, label: 'Criado em' } };
 	const navigate = useNavigate();
@@ -64,7 +66,7 @@ const ToDosListController = () => {
 			sort
 		});
 		
-		let toDoss = subHandle?.ready() ? toDosApi.find({ owner: user.username }, { sort: {lastupdate: -1} }).fetch() : [];
+		let toDoss = subHandle?.ready() ? toDosApi.find({ owner: user?.username }, { sort: {lastupdate: -1} }).fetch() : [];
 		
 		if (config.valueTab == "1") {
 			toDoss = subHandle?.ready() ? toDosApi.find(filter, { sort: {lastupdate: -1} }).fetch() : [];
@@ -88,7 +90,16 @@ const ToDosListController = () => {
 	}, []);
 
 	const onDeleteButtonClick = useCallback((task: any) => {
-		toDosApi.remove(task);
+		if (task.owner != user?.username){
+			showNotification({
+				type: 'error',
+				title: 'Ação não permitida!',
+				message: 'Você não pode excluir tarefas de outros usuários.'
+				})
+			}
+		else {
+			toDosApi.remove(task);
+		}
 	}, []);
 
 	const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: string) => {
