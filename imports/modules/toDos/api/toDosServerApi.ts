@@ -44,7 +44,7 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 					statusToggle: 1,
 					slider: 1,
 					check: 1,
-					address: 1
+					address: 1,
 				}
 			});
 		});
