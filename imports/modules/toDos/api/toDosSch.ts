@@ -57,6 +57,11 @@ export const toDosSch: ISchema<IToDos> = {
 			{ value: 'baixa', label: 'Baixa' }
 		]
 	},
+	ehTarefaPessoal: {
+		type: Boolean,
+		label: 'Tarefa Pessoal?',
+		optional: true,
+	},
 	date: {
 		type: Date,
 		label: 'Data de fabricação',
@@ -163,6 +168,7 @@ export interface IToDos extends IDoc {
 	check: Array<string>;
 	type: string;
 	typeMulti: string;
+	ehTarefaPessoal: boolean;
 	date: Date;
 	files: object[];
 	chip: string[];
