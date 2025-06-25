@@ -13,6 +13,7 @@ import { SysCheckBox } from '/imports/ui/components/sysFormFields/sysCheckBoxFie
 import SysFormButton from '/imports/ui/components/sysFormFields/sysFormButton/sysFormButton';
 import { SysUploadFile } from '/imports/ui/components/sysFormFields/sysUploadFile/sysUploadFile';
 import SysSlider from '/imports/ui/components/sysFormFields/sysSlider/sysSliderField';
+import SysSwitch from '/imports/ui/components/sysFormFields/sysSwitch/sysSwitch';
 import { SysLocationField } from '/imports/ui/components/sysFormFields/sysLocationField/sysLocationField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 
@@ -66,6 +67,7 @@ const ToDosDetailView = () => {
 							showNumberCharactersTyped
 							max={200}
 						/>
+						<SysSwitch name="ehTarefaPessoal" label="Tarefa Pessoal?" />
 						<SysUploadFile name="files" />
 						<SysSlider name="slider" />
 						<SysLocationField name="address" />

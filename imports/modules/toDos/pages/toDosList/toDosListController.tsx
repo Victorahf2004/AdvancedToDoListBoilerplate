@@ -69,7 +69,10 @@ const ToDosListController = () => {
 		let toDoss = subHandle?.ready() ? toDosApi.find({ owner: user?.username }, { sort: {lastupdate: -1} }).fetch() : [];
 		
 		if (config.valueTab == "1") {
-			toDoss = subHandle?.ready() ? toDosApi.find(filter, { sort: {lastupdate: -1} }).fetch() : [];
+			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
+			const tarefasOutrasPessoas = { owner: { $ne: user?.username} };
+			const queryTime = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
+			toDoss = subHandle?.ready() ? toDosApi.find(queryTime, { sort: {lastupdate: -1} }).fetch() : [];
 		}
 
 		return {
