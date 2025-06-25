@@ -60,6 +60,7 @@ export const toDosSch: ISchema<IToDos> = {
 	ehTarefaPessoal: {
 		type: Boolean,
 		label: 'Tarefa Pessoal?',
+		defaultValue: false,
 		optional: true,
 	},
 	date: {
