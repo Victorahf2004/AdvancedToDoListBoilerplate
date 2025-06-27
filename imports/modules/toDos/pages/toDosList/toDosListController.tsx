@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useContext } from 'react';
+import React, { useCallback, useMemo, useContext, useEffect } from 'react';
 import ToDosListView from './toDosListView';
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,8 @@ interface IInitialConfig {
 	searchBy: string | null;
 	viewComplexTable: boolean;
 	valueTab: string;
+	pageAtual: number;
+	numeroPages: number;
 }
 
 interface IToDosListContollerContext {
@@ -30,6 +32,9 @@ interface IToDosListContollerContext {
 	valueTab: string;
 	handleTabChange: (event: React.SyntheticEvent, newValue: string) => void;
 	abas: IAba[];
+	pageAtual: number;
+	numeroPages: number;
+	alterarPagina: (event: any, value: number) => void;
 }
 
 export const ToDosListControllerContext = React.createContext<IToDosListContollerContext>(
@@ -42,6 +47,8 @@ const initialConfig = {
 	searchBy: null,
 	viewComplexTable: false,
 	valueTab: "0",
+	pageAtual: 1,
+	numeroPages: 2,
 };
 
 const ToDosListController = () => {
@@ -61,28 +68,68 @@ const ToDosListController = () => {
 		[sortProperties.field]: sortProperties.sortAscending ? 1 : -1
 	};
 
-	const { loading, toDoss } = useTracker(() => {
-		const subHandle = toDosApi.subscribe('toDosList', filter, {
-			sort
-		});
-		
-		let toDoss = subHandle?.ready() ? toDosApi.find({ owner: user?.username }, { sort: {lastupdate: -1} }).fetch() : [];
-		
+	const numeroTarefasPorPagina = 4;
+	const { loading, toDoss, total } = useTracker(() => {
+		let query = {};
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
 			const tarefasOutrasPessoas = { owner: { $ne: user?.username} };
-			const queryTime = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
-			toDoss = subHandle?.ready() ? toDosApi.find(queryTime, { sort: {lastupdate: -1} }).fetch() : [];
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
 		}
+		else {
+			query = { owner: user?.username };
+		}
+		
+		let opcoesSkip = (config.pageAtual - 1) * numeroTarefasPorPagina;
+		let options = { sort: {lastupdate: -1}, skip: opcoesSkip, limit: numeroTarefasPorPagina };
+		const subHandle = toDosApi.subscribe('toDosList');
+
+		let toDoss = subHandle?.ready() ? toDosApi.find(query, options).fetch() : [];
 
 		return {
 			toDoss,
 			loading: !!subHandle && !subHandle.ready(),
-			total: subHandle ? subHandle.total : toDoss.length
+			total: subHandle ? subHandle.total : toDoss.length,
 		};
-	}, [config]);
+	}, [config.valueTab, config.pageAtual]);
 
-
+	// useEffect(() => {
+	// 	toDosApi.countTasks((error, totalColecaoCompleta) => {
+	// 		if (error) return showNotification({
+	// 			type: "error",
+	// 			title: "Erro ao contar tarefas",
+	// 			message: error.message
+	// 		});
+	// 		let numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
+	// 		if (numeroPagesAtual < 1) {
+	// 			numeroPagesAtual = 1;
+	// 		}
+	// 		setConfig((prev) => ({
+	// 			...prev,
+	// 			numeroPages: numeroPagesAtual,
+	// 		}))
+	// 	})
+	// }, [config.valueTab]);
+	// const gerandoNumeroPaginas = useTracker(() => {toDosApi.countTasks((error, totalColecaoCompleta) => {
+		// 	if (error) return showNotification({
+		// 		type: "error",
+		// 		title: "Erro ao contar tarefas",
+		// 		message: error.message
+		// 	});
+		// 	const numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
+		// 	setConfig((prev) => ({
+		// 		...prev,
+		// 		numeroPages: numeroPagesAtual,
+		// 	}))
+		// })
+	// }, [toDoss]);
+	
+	const alterarPagina = useCallback((event: any, value: number) => {
+		setConfig((prev) => ({
+			...prev,
+			pageAtual: value,
+		}));
+	}, []);
 	const onAddButtonClick = useCallback(() => {
 		const newDocumentId = nanoid();
 		navigate(`/toDos/create/${newDocumentId}`);
@@ -151,6 +198,9 @@ const ToDosListController = () => {
 			valueTab: config.valueTab,
 			handleTabChange,
 			abas,
+			pageAtual: config.pageAtual,
+			numeroPages: config.numeroPages,
+			alterarPagina,
 		}),
 		[toDoss, loading]
 	);

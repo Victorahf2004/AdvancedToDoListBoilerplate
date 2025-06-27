@@ -25,7 +25,8 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 			},
 			async (doc: IToDos & { nomeUsuario: string }) => {
 				const userProfileDoc: (Partial<IUserProfile>) = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
-				return { ...doc, owner: userProfileDoc ? userProfileDoc.username : 'Sem autor' };
+				// return { ...doc, owner: userProfileDoc ? userProfileDoc.username : 'Sem autor' };
+				return { ...doc, owner: "Teste" };
 			}
 		);
 
@@ -49,35 +50,10 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 			});
 		});
 
-	// 	this.addRestEndpoint(
-	// 		'view',
-	// 		(params, options) => {
-	// 			console.log('Params', params);
-	// 			console.log('options.headers', options.headers);
-	// 			return { status: 'ok' };
-	// 		},
-	// 		['post']
-	// 	);
-
-	// 	this.addRestEndpoint(
-	// 		'view/:toDosId',
-	// 		(params, _options) => {
-	// 			console.log('Rest', params);
-	// 			if (params.toDosId) {
-	// 				return self
-	// 					.defaultCollectionPublication(
-	// 						{
-	// 							_id: params.toDosId
-	// 						},
-	// 						{}
-	// 					)
-	// 					.fetch();
-	// 			} else {
-	// 				return { ...params };
-	// 			}
-	// 		},
-	// 		['get']
-	// 	);
+		this.registerMethod("countTasks", this.countTasks.bind(this));
+	}
+	public async countTasks(): Promise<number> {
+		return await this.getCollectionInstance().find({}).countAsync();
 	}
 }
 

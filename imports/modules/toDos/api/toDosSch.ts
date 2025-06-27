@@ -40,7 +40,7 @@ export const toDosSch: ISchema<IToDos> = {
 	type: {
 		type: String,
 		label: 'Categoria',
-		defaultValue: '',
+		defaultValue: 'Não Concluída',
 		optional: false,
 		options: () => [
 			{ value: 'Não Concluída', label: 'Não Concluída' },

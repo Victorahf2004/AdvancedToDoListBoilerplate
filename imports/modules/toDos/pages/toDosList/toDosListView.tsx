@@ -14,6 +14,7 @@ import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectFi
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 import SysTaskList from '/imports/ui/components/sysTaskList/sysTaskList';
 import { SysTabs } from '/imports/ui/components/sysTabs/sysTabs';
+import Pagination from '@mui/material/Pagination';
 
 const ToDosListView = () => {
 	const controller = React.useContext(ToDosListControllerContext);
@@ -64,6 +65,7 @@ const ToDosListView = () => {
 				fixed={true}
 				onClick={controller.onAddButtonClick}
 			/>
+			<Pagination count={controller.numeroPages} page={controller.pageAtual} onChange={controller.alterarPagina} size="large" />
 		</Container>
 	);
 };
