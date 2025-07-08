@@ -29,7 +29,7 @@ const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolea
                 }
                 label={
                     <ButtonBase onClick={() => seeTaskInfo(task)}>
-                        <ListItemText primary={task.title} secondary={`Criado por: ${task.owner}`} />
+                        <ListItemText primary={task?.title} secondary={`Criado por: ${task?.owner}`} />
                     </ButtonBase>
                 }
             />

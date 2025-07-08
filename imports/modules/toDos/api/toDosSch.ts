@@ -159,6 +159,13 @@ export const toDosSch: ISchema<IToDos> = {
 		label: 'Exigir comprovação',
 		defaultValue: false,
 		optional: true
+	},
+	owner: {
+		type: String,
+		label: 'Dono',
+		defaultValue: '',
+		optional: true,
+		visibilityFunction: () => false,
 	}
 };
 

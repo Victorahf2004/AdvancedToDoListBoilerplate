@@ -11,8 +11,11 @@ class ToDosApi extends ProductBase<IToDos> {
 		});
 	}
 
-	countTasks = (callback: (error: IMeteorError, result: number) => void) =>
-		this.callMethod("countTasks", callback);
+	countTasks = (query: Object, callback: (error: IMeteorError, result: number) => void) =>
+		this.callMethod("countTasks", query, callback);
+
+	// adicionarOwnerAoDoc = (selectedAction: string, usuarioAtual: string, doc: Partial<IToDos>, callback: (error: IMeteorError, result: Partial<IToDos>) => void) =>
+	// 	this.callMethod("adicionarOwnerAoDoc", selectedAction, usuarioAtual, doc, callback);
 }
 
 export const toDosApi = new ToDosApi();

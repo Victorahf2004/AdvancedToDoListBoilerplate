@@ -17,7 +17,7 @@ interface IInitialConfig {
 	viewComplexTable: boolean;
 	valueTab: string;
 	pageAtual: number;
-	numeroPages: number;
+	totalPaginas: number;
 }
 
 interface IToDosListContollerContext {
@@ -33,7 +33,7 @@ interface IToDosListContollerContext {
 	handleTabChange: (event: React.SyntheticEvent, newValue: string) => void;
 	abas: IAba[];
 	pageAtual: number;
-	numeroPages: number;
+	totalPaginas: number;
 	alterarPagina: (event: any, value: number) => void;
 }
 
@@ -48,7 +48,7 @@ const initialConfig = {
 	viewComplexTable: false,
 	valueTab: "0",
 	pageAtual: 1,
-	numeroPages: 2,
+	totalPaginas: 1,
 };
 
 const ToDosListController = () => {
@@ -69,7 +69,7 @@ const ToDosListController = () => {
 	};
 
 	const numeroTarefasPorPagina = 4;
-	const { loading, toDoss, total } = useTracker(() => {
+	const { loading, toDoss } = useTracker(() => {
 		let query = {};
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
@@ -89,39 +89,52 @@ const ToDosListController = () => {
 		return {
 			toDoss,
 			loading: !!subHandle && !subHandle.ready(),
-			total: subHandle ? subHandle.total : toDoss.length,
+			// total: toDoss.length,
 		};
 	}, [config.valueTab, config.pageAtual]);
 
-	// useEffect(() => {
+	useEffect(() => {
+		let query = {};
+		// console.log("Config: ", config);
+		if (!user) return;
+		if (config.valueTab == "1") {
+			// console.log("ValueTab", config.valueTab);
+			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
+			const tarefasOutrasPessoas = { owner: { $ne: user?.username} };
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
+		}
+		else {
+			// console.log("ValueTab", config.valueTab);
+			query = { owner: user?.username };
+		}
+		toDosApi.countTasks(query, (error, totalColecaoCompleta) => {
+			if (error) return showNotification({
+				type: "error",
+				title: "Erro ao contar tarefas",
+				message: error.message
+			});
+			let numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina) == 0? 1 : Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
+			setConfig((prev) => ({
+				...prev,
+				totalPaginas: numeroPagesAtual,
+			}))
+		})
+		
+	}, [config.valueTab, user]);
+
+	// const gerandoNumeroPaginas = useTracker(() => {
 	// 	toDosApi.countTasks((error, totalColecaoCompleta) => {
 	// 		if (error) return showNotification({
 	// 			type: "error",
 	// 			title: "Erro ao contar tarefas",
 	// 			message: error.message
 	// 		});
-	// 		let numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
-	// 		if (numeroPagesAtual < 1) {
-	// 			numeroPagesAtual = 1;
-	// 		}
+	// 		const numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
 	// 		setConfig((prev) => ({
 	// 			...prev,
 	// 			numeroPages: numeroPagesAtual,
 	// 		}))
 	// 	})
-	// }, [config.valueTab]);
-	// const gerandoNumeroPaginas = useTracker(() => {toDosApi.countTasks((error, totalColecaoCompleta) => {
-		// 	if (error) return showNotification({
-		// 		type: "error",
-		// 		title: "Erro ao contar tarefas",
-		// 		message: error.message
-		// 	});
-		// 	const numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
-		// 	setConfig((prev) => ({
-		// 		...prev,
-		// 		numeroPages: numeroPagesAtual,
-		// 	}))
-		// })
 	// }, [toDoss]);
 	
 	const alterarPagina = useCallback((event: any, value: number) => {
@@ -156,6 +169,7 @@ const ToDosListController = () => {
 		setConfig((prev) => ({
 			...prev,
 			valueTab: newValue,
+			pageAtual: 1,
 		}))
 	}, []);
 
@@ -199,10 +213,10 @@ const ToDosListController = () => {
 			handleTabChange,
 			abas,
 			pageAtual: config.pageAtual,
-			numeroPages: config.numeroPages,
+			totalPaginas: config.totalPaginas,
 			alterarPagina,
 		}),
-		[toDoss, loading]
+		[toDoss, loading, config]
 	);
 
 	return (
