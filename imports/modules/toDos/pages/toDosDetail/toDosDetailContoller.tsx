@@ -50,19 +50,6 @@ const ToDosDetailController = () => {
 	const onSubmit = useCallback((doc: IToDos) => {
 		console.log("OIIIIIIIIIIIIIIIIIIIIIIIIIII");
 		const selectedAction = state === 'create' ? 'insert' : 'update';
-		// if (selectedAction == "insert" && user) {
-		// 	novoDoc = {...doc, owner: user.username};
-		// }
-		// else {
-		// 	novoDoc = {...doc}
-		// 	showNotification({
-		// 		type: "warning",
-		// 		title: "Atenção!",
-		// 		message: `O velho doc é: ${JSON.stringify(document)}\n
-		// 				  O novo doc é: ${JSON.stringify(doc)}`,
-		// 	})
-		// }
-		// console.log("O owner do novo doc é: ", novoDoc.owner);
 		toDosApi[selectedAction](doc, (e: IMeteorError) => {
 			if (!e) {
 				closePage();

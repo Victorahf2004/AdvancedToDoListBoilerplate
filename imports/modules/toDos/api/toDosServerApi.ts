@@ -27,7 +27,6 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 			async (doc: IToDos & { nomeUsuario: string }) => {
 				const userProfileDoc: (Partial<IUserProfile>) = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
 				return { ...doc, owner: userProfileDoc?.username || 'Usuário Desconhecido' };
-				// return { ...doc, owner: "Teste" };
 			}
 		);
 
@@ -53,7 +52,6 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 		});
 
 		this.registerMethod("countTasks", this.countTasks.bind(this));
-		// this.registerMethod("adicionarOwnerAoDoc", this.adicionarOwnerAoDoc.bind(this));
 	}
 	public async countTasks(query: Object): Promise<number> {
 		console.log("Contando tarefas com query: ", query);
@@ -61,19 +59,6 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 		console.log("Resultado é: ", result);
 		return result;
 	}
-	// public async adicionarOwnerAoDoc(selectedAction: string, usuarioAtual: string, doc: Partial<IToDos>): Promise<Partial<IToDos>> {
-	// 	if (selectedAction == "insert"){
-	// 		return { ...doc, owner: usuarioAtual };
-	// 	}
-	// 	else {
-	// 		console.log("Ação é: ", selectedAction);
-	// 		console.log("Doc.createdby é: ", doc.createdby);
-	// 		const userProfileDoc: (Partial<IUserProfile>) = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
-	// 		const username = userProfileDoc?.username || 'Usuário Desconhecido';
-	// 		console.log("Username é: ", username);
-	// 		return { ...doc, owner: username };
-	// 	}
-	// }
 }
 
 export const toDosServerApi = new ToDosServerApi();

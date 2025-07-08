@@ -95,16 +95,13 @@ const ToDosListController = () => {
 
 	useEffect(() => {
 		let query = {};
-		// console.log("Config: ", config);
 		if (!user) return;
 		if (config.valueTab == "1") {
-			// console.log("ValueTab", config.valueTab);
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
 			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
 			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
 		}
 		else {
-			// console.log("ValueTab", config.valueTab);
 			query = { createdby: user?._id };
 		}
 		toDosApi.countTasks(query, (error, totalColecaoCompleta) => {
@@ -121,21 +118,6 @@ const ToDosListController = () => {
 		})
 		
 	}, [config.valueTab, user]);
-
-	// const gerandoNumeroPaginas = useTracker(() => {
-	// 	toDosApi.countTasks((error, totalColecaoCompleta) => {
-	// 		if (error) return showNotification({
-	// 			type: "error",
-	// 			title: "Erro ao contar tarefas",
-	// 			message: error.message
-	// 		});
-	// 		const numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
-	// 		setConfig((prev) => ({
-	// 			...prev,
-	// 			numeroPages: numeroPagesAtual,
-	// 		}))
-	// 	})
-	// }, [toDoss]);
 	
 	const alterarPagina = useCallback((event: any, value: number) => {
 		setConfig((prev) => ({
