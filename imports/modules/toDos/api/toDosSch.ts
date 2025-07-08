@@ -40,7 +40,7 @@ export const toDosSch: ISchema<IToDos> = {
 	type: {
 		type: String,
 		label: 'Categoria',
-		defaultValue: '',
+		defaultValue: 'Não Concluída',
 		optional: false,
 		options: () => [
 			{ value: 'Não Concluída', label: 'Não Concluída' },
@@ -159,6 +159,13 @@ export const toDosSch: ISchema<IToDos> = {
 		label: 'Exigir comprovação',
 		defaultValue: false,
 		optional: true
+	},
+	owner: {
+		type: String,
+		label: 'Dono',
+		defaultValue: '',
+		optional: true,
+		visibilityFunction: () => false,
 	}
 };
 

@@ -31,7 +31,7 @@ export const SysTaskListItemControllerContext = React.createContext<ISysTaskList
 const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
 
     const task: Partial<IToDos> = useTracker(() => toDosApi.findOne({_id: taskId}));
-    let situacao: boolean = task.type === "Concluída";
+    let situacao: boolean = task?.type === "Concluída";
     const navigate = useNavigate();
     const { showNotification } = useContext(AppLayoutContext);
 

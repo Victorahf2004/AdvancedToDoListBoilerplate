@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useContext } from 'react';
+import React, { useCallback, useMemo, useContext, useEffect } from 'react';
 import ToDosListView from './toDosListView';
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,8 @@ interface IInitialConfig {
 	searchBy: string | null;
 	viewComplexTable: boolean;
 	valueTab: string;
+	pageAtual: number;
+	totalPaginas: number;
 }
 
 interface IToDosListContollerContext {
@@ -30,6 +32,9 @@ interface IToDosListContollerContext {
 	valueTab: string;
 	handleTabChange: (event: React.SyntheticEvent, newValue: string) => void;
 	abas: IAba[];
+	pageAtual: number;
+	totalPaginas: number;
+	alterarPagina: (event: any, value: number) => void;
 }
 
 export const ToDosListControllerContext = React.createContext<IToDosListContollerContext>(
@@ -42,6 +47,8 @@ const initialConfig = {
 	searchBy: null,
 	viewComplexTable: false,
 	valueTab: "0",
+	pageAtual: 1,
+	totalPaginas: 1,
 };
 
 const ToDosListController = () => {
@@ -61,28 +68,63 @@ const ToDosListController = () => {
 		[sortProperties.field]: sortProperties.sortAscending ? 1 : -1
 	};
 
+	const numeroTarefasPorPagina = 4;
 	const { loading, toDoss } = useTracker(() => {
-		const subHandle = toDosApi.subscribe('toDosList', filter, {
-			sort
-		});
-		
-		let toDoss = subHandle?.ready() ? toDosApi.find({ owner: user?.username }, { sort: {lastupdate: -1} }).fetch() : [];
-		
+		let query = {};
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
-			const tarefasOutrasPessoas = { owner: { $ne: user?.username} };
-			const queryTime = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
-			toDoss = subHandle?.ready() ? toDosApi.find(queryTime, { sort: {lastupdate: -1} }).fetch() : [];
+			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
 		}
+		else {
+			query = { createdby: user?._id };
+		}
+		
+		let opcoesSkip = (config.pageAtual - 1) * numeroTarefasPorPagina;
+		let options = { sort: {lastupdate: -1}, skip: opcoesSkip, limit: numeroTarefasPorPagina };
+		const subHandle = toDosApi.subscribe('toDosList');
+
+		let toDoss = subHandle?.ready() ? toDosApi.find(query, options).fetch() : [];
 
 		return {
 			toDoss,
 			loading: !!subHandle && !subHandle.ready(),
-			total: subHandle ? subHandle.total : toDoss.length
+			// total: toDoss.length,
 		};
-	}, [config]);
+	}, [config.valueTab, config.pageAtual]);
 
-
+	useEffect(() => {
+		let query = {};
+		if (!user) return;
+		if (config.valueTab == "1") {
+			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
+			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
+		}
+		else {
+			query = { createdby: user?._id };
+		}
+		toDosApi.countTasks(query, (error, totalColecaoCompleta) => {
+			if (error) return showNotification({
+				type: "error",
+				title: "Erro ao contar tarefas",
+				message: error.message
+			});
+			let numeroPagesAtual = Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina) == 0? 1 : Math.ceil(totalColecaoCompleta / numeroTarefasPorPagina);
+			setConfig((prev) => ({
+				...prev,
+				totalPaginas: numeroPagesAtual,
+			}))
+		})
+		
+	}, [config.valueTab, user]);
+	
+	const alterarPagina = useCallback((event: any, value: number) => {
+		setConfig((prev) => ({
+			...prev,
+			pageAtual: value,
+		}));
+	}, []);
 	const onAddButtonClick = useCallback(() => {
 		const newDocumentId = nanoid();
 		navigate(`/toDos/create/${newDocumentId}`);
@@ -109,6 +151,7 @@ const ToDosListController = () => {
 		setConfig((prev) => ({
 			...prev,
 			valueTab: newValue,
+			pageAtual: 1,
 		}))
 	}, []);
 
@@ -151,8 +194,11 @@ const ToDosListController = () => {
 			valueTab: config.valueTab,
 			handleTabChange,
 			abas,
+			pageAtual: config.pageAtual,
+			totalPaginas: config.totalPaginas,
+			alterarPagina,
 		}),
-		[toDoss, loading]
+		[toDoss, loading, config]
 	);
 
 	return (

@@ -9,6 +9,9 @@ import { ISchema } from '/imports/typings/ISchema';
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
+import { IUserProfile } from 'imports/modules/userprofile/api/userProfileSch';
+import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
+
 
 interface IToDosDetailContollerContext {
 	closePage: () => void;
@@ -45,11 +48,9 @@ const ToDosDetailController = () => {
 	}, []);
 
 	const onSubmit = useCallback((doc: IToDos) => {
+		console.log("OIIIIIIIIIIIIIIIIIIIIIIIIIII");
 		const selectedAction = state === 'create' ? 'insert' : 'update';
 		toDosApi[selectedAction](doc, (e: IMeteorError) => {
-		console.log("Teste");
-		console.log("O owner da task é: ", doc.owner);
-		console.log("A task é: ", doc);	
 			if (!e) {
 				closePage();
 				showNotification({
@@ -73,7 +74,7 @@ const ToDosDetailController = () => {
 				});
 			}
 		});
-	}, []);
+	}, [document, state, user]);
 
 	return (
 		<ToDosDetailControllerContext.Provider
