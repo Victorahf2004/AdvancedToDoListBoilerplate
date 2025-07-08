@@ -73,11 +73,11 @@ const ToDosListController = () => {
 		let query = {};
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
-			const tarefasOutrasPessoas = { owner: { $ne: user?.username} };
+			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
 			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
 		}
 		else {
-			query = { owner: user?.username };
+			query = { createdby: user?._id };
 		}
 		
 		let opcoesSkip = (config.pageAtual - 1) * numeroTarefasPorPagina;
@@ -100,12 +100,12 @@ const ToDosListController = () => {
 		if (config.valueTab == "1") {
 			// console.log("ValueTab", config.valueTab);
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
-			const tarefasOutrasPessoas = { owner: { $ne: user?.username} };
+			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
 			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
 		}
 		else {
 			// console.log("ValueTab", config.valueTab);
-			query = { owner: user?.username };
+			query = { createdby: user?._id };
 		}
 		toDosApi.countTasks(query, (error, totalColecaoCompleta) => {
 			if (error) return showNotification({
