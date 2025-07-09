@@ -36,7 +36,6 @@ interface IToDosListContollerContext {
 	pageAtual: number;
 	totalPaginas: number;
 	alterarPagina: (event: any, value: number) => void;
-	searchText: string | null;
 }
 
 export const ToDosListControllerContext = React.createContext<IToDosListContollerContext>(
@@ -55,7 +54,6 @@ const initialConfig = {
 
 const ToDosListController = () => {
 	const [config, setConfig] = React.useState<IInitialConfig>(initialConfig);
-	const [searchText, setSearchText] = React.useState<string>('');
 	const { user } = useContext<IAuthContext>(AuthContext);
 	const { showNotification } = useContext(AppLayoutContext);
 	const { title, type, typeMulti } = toDosApi.getSchema();
@@ -153,7 +151,6 @@ const ToDosListController = () => {
 	}, []);
 
 	const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: string) => {
-		setSearchText('');
 		setConfig((prev) => ({
 			...prev,
 			valueTab: newValue,
@@ -162,22 +159,15 @@ const ToDosListController = () => {
 	}, []);
 
 	const onChangeTextField = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchText(event.target.value);
-	}, []);
-
-	useEffect(() => {
+		const { value } = event.target;
 		const delayedSearch = setTimeout(() => {
-			setConfig(prev => ({
+			setConfig((prev) => ({
 				...prev,
-				pageAtual: 1,
-				filter: {
-					...prev.filter,
-					title: { $regex: searchText.trim(), $options: 'i' },
-				},
+				filter: { ...prev.filter, title: { $regex: value.trim(), $options: 'i' } }
 			}));
 		}, 1000);
 		return () => clearTimeout(delayedSearch);
-	}, [searchText]);
+	}, []);
 
 	const onSelectedCategory = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
@@ -210,9 +200,8 @@ const ToDosListController = () => {
 			pageAtual: config.pageAtual,
 			totalPaginas: config.totalPaginas,
 			alterarPagina,
-			searchText,
 		}),
-		[toDoss, loading, config, searchText]
+		[toDoss, loading, config]
 	);
 
 	return (
