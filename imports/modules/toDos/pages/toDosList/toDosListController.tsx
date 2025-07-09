@@ -9,6 +9,7 @@ import { toDosApi } from '../../api/toDosApi';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { IAba } from '/imports/ui/components/sysTabs/sysTabs';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
+import { confirmDialogStyles } from '/imports/ui/appComponents/showDialog/custom/confirmDialog/confirmDialogStyles';
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -70,14 +71,15 @@ const ToDosListController = () => {
 
 	const numeroTarefasPorPagina = 4;
 	const { loading, toDoss } = useTracker(() => {
-		let query = {};
+		let query = filter;
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
 			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
-			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas, query] };
 		}
 		else {
-			query = { createdby: user?._id };
+			let queryDoUsuario = { createdby: user?._id };
+			query = { $and: [queryDoUsuario, query]}
 		}
 		
 		let opcoesSkip = (config.pageAtual - 1) * numeroTarefasPorPagina;
@@ -91,18 +93,19 @@ const ToDosListController = () => {
 			loading: !!subHandle && !subHandle.ready(),
 			// total: toDoss.length,
 		};
-	}, [config.valueTab, config.pageAtual]);
+	}, [config.valueTab, config.pageAtual, config.filter]);
 
 	useEffect(() => {
-		let query = {};
+		let query = filter;
 		if (!user) return;
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
 			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
-			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas, query] };
 		}
 		else {
-			query = { createdby: user?._id };
+			let queryDoUsuario = { createdby: user?._id };
+			query = { $and: [queryDoUsuario, query]}
 		}
 		toDosApi.countTasks(query, (error, totalColecaoCompleta) => {
 			if (error) return showNotification({
@@ -117,7 +120,7 @@ const ToDosListController = () => {
 			}))
 		})
 		
-	}, [config.valueTab, user]);
+	}, [config.valueTab, user, config.filter]);
 	
 	const alterarPagina = useCallback((event: any, value: number) => {
 		setConfig((prev) => ({
