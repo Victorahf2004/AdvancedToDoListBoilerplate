@@ -9,6 +9,7 @@ import { toDosApi } from '../../api/toDosApi';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { IAba } from '/imports/ui/components/sysTabs/sysTabs';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
+import { confirmDialogStyles } from '/imports/ui/appComponents/showDialog/custom/confirmDialog/confirmDialogStyles';
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -35,6 +36,7 @@ interface IToDosListContollerContext {
 	pageAtual: number;
 	totalPaginas: number;
 	alterarPagina: (event: any, value: number) => void;
+	searchText: string | null;
 }
 
 export const ToDosListControllerContext = React.createContext<IToDosListContollerContext>(
@@ -53,6 +55,7 @@ const initialConfig = {
 
 const ToDosListController = () => {
 	const [config, setConfig] = React.useState<IInitialConfig>(initialConfig);
+	const [searchText, setSearchText] = React.useState<string>('');
 	const { user } = useContext<IAuthContext>(AuthContext);
 	const { showNotification } = useContext(AppLayoutContext);
 	const { title, type, typeMulti } = toDosApi.getSchema();
@@ -70,14 +73,15 @@ const ToDosListController = () => {
 
 	const numeroTarefasPorPagina = 4;
 	const { loading, toDoss } = useTracker(() => {
-		let query = {};
+		let query = filter;
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
 			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
-			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas, query] };
 		}
 		else {
-			query = { createdby: user?._id };
+			let queryDoUsuario = { createdby: user?._id };
+			query = { $and: [queryDoUsuario, query]}
 		}
 		
 		let opcoesSkip = (config.pageAtual - 1) * numeroTarefasPorPagina;
@@ -91,18 +95,19 @@ const ToDosListController = () => {
 			loading: !!subHandle && !subHandle.ready(),
 			// total: toDoss.length,
 		};
-	}, [config.valueTab, config.pageAtual]);
+	}, [config.valueTab, config.pageAtual, config.filter]);
 
 	useEffect(() => {
-		let query = {};
+		let query = filter;
 		if (!user) return;
 		if (config.valueTab == "1") {
 			const tarefasNaoPessoais = { ehTarefaPessoal: { $ne: true } };
 			const tarefasOutrasPessoas = { createdby: { $ne: user?._id} };
-			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas] };
+			query = { $and: [tarefasNaoPessoais, tarefasOutrasPessoas, query] };
 		}
 		else {
-			query = { createdby: user?._id };
+			let queryDoUsuario = { createdby: user?._id };
+			query = { $and: [queryDoUsuario, query]}
 		}
 		toDosApi.countTasks(query, (error, totalColecaoCompleta) => {
 			if (error) return showNotification({
@@ -117,7 +122,7 @@ const ToDosListController = () => {
 			}))
 		})
 		
-	}, [config.valueTab, user]);
+	}, [config.valueTab, user, config.filter]);
 	
 	const alterarPagina = useCallback((event: any, value: number) => {
 		setConfig((prev) => ({
@@ -148,6 +153,7 @@ const ToDosListController = () => {
 	}, []);
 
 	const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: string) => {
+		setSearchText('');
 		setConfig((prev) => ({
 			...prev,
 			valueTab: newValue,
@@ -156,15 +162,22 @@ const ToDosListController = () => {
 	}, []);
 
 	const onChangeTextField = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
+		setSearchText(event.target.value);
+	}, []);
+
+	useEffect(() => {
 		const delayedSearch = setTimeout(() => {
-			setConfig((prev) => ({
+			setConfig(prev => ({
 				...prev,
-				filter: { ...prev.filter, title: { $regex: value.trim(), $options: 'i' } }
+				pageAtual: 1,
+				filter: {
+					...prev.filter,
+					title: { $regex: searchText.trim(), $options: 'i' },
+				},
 			}));
 		}, 1000);
 		return () => clearTimeout(delayedSearch);
-	}, []);
+	}, [searchText]);
 
 	const onSelectedCategory = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
@@ -197,8 +210,9 @@ const ToDosListController = () => {
 			pageAtual: config.pageAtual,
 			totalPaginas: config.totalPaginas,
 			alterarPagina,
+			searchText,
 		}),
-		[toDoss, loading, config]
+		[toDoss, loading, config, searchText]
 	);
 
 	return (
