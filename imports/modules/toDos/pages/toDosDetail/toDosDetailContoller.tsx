@@ -11,6 +11,8 @@ import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { IUserProfile } from 'imports/modules/userprofile/api/userProfileSch';
 import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 
 
 interface IToDosDetailContollerContext {
@@ -86,7 +88,13 @@ const ToDosDetailController = () => {
 				onSubmit,
 				changeToEdit
 			}}>
-			{<ToDosDetailView />}
+			{state == "view"? (
+				<Dialog open={true} onClose={closePage} fullWidth maxWidth="md">
+					<DialogContent>
+						<ToDosDetailView />
+					</DialogContent>
+				</Dialog>): 
+				<ToDosDetailView />}
 		</ToDosDetailControllerContext.Provider>
 	);
 };
