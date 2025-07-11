@@ -4,7 +4,11 @@ import { toDosSch, IToDos } from './toDosSch';
 import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
 import { ProductServerBase } from '/imports/api/productServerBase';
 import { IUserProfile } from '../../userprofile/api/userProfileSch';
+import { IMeteorUser } from 'imports/modules/userprofile/api/userProfileSch';
+import User = Meteor.User;
 import { String } from 'lodash';
+import { IDoc } from '/imports/typings/IDoc';
+import { IContext } from '/imports/typings/IContext';
 // endregion
 
 class ToDosServerApi extends ProductServerBase<IToDos> {
@@ -15,7 +19,7 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 		});
 
 		const self = this;
-
+		this.beforeUpdate = this.beforeUpdate.bind(this);
 		this.addTransformedPublication(
 			'toDosList',
 			(filter = {}, options = {}) => {
@@ -58,6 +62,17 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 		const result = await this.getCollectionInstance().find(query).countAsync();
 		console.log("Resultado é: ", result);
 		return result;
+	}
+	
+	async beforeUpdate(_docObj: IDoc | Partial<IDoc>, _context: IContext) {
+		const user: User | null = await Meteor.userAsync();
+		const userId = user?._id;
+		const docId = _docObj._id;
+		const originalDoc = await this.getCollectionInstance().findOneAsync({_id: docId});
+		if (userId != originalDoc.createdby){
+			throw new Meteor.Error("not-authorized", "Você não pode editar o documento de outro usuário");
+		}
+		return super.beforeUpdate(_docObj, _context);
 	}
 }
 

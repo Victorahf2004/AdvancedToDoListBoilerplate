@@ -50,7 +50,6 @@ const ToDosDetailController = () => {
 	}, []);
 
 	const onSubmit = useCallback((doc: IToDos) => {
-		console.log("OIIIIIIIIIIIIIIIIIIIIIIIIIII");
 		const selectedAction = state === 'create' ? 'insert' : 'update';
 		toDosApi[selectedAction](doc, (e: IMeteorError) => {
 			if (!e) {
@@ -60,21 +59,14 @@ const ToDosDetailController = () => {
 					title: 'Operação realizada!',
 					message: `O exemplo foi ${selectedAction === 'update' ? 'atualizado' : 'cadastrado'} com sucesso!`
 				});
-			} 
-			else if (doc.owner != user?.username){
-				showNotification({
-					type: 'error',
-					title: 'Ação não permitida!',
-					message: 'Você não pode editar tarefas de outros usuários.'
-				})
 			}
 			else {
 				showNotification({
 					type: 'error',
-					title: 'Operação não realizada!',
-					message: `Erro ao realizar a operação: ${e.reason}`
+					title: 'Erro ao realizar operação',
+					message: e.reason || 'Ocorreu um erro ao tentar salvar o exemplo.'
 				});
-			}
+			} 
 		});
 	}, [document, state, user]);
 
