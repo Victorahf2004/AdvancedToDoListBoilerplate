@@ -10,6 +10,7 @@ import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext
 import { IAba } from '/imports/ui/components/sysTabs/sysTabs';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import { confirmDialogStyles } from '/imports/ui/appComponents/showDialog/custom/confirmDialog/confirmDialogStyles';
+import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -138,16 +139,22 @@ const ToDosListController = () => {
 	}, []);
 
 	const onDeleteButtonClick = useCallback((task: any) => {
-		if (task.owner != user?.username){
-			showNotification({
-				type: 'error',
-				title: 'Ação não permitida!',
-				message: 'Você não pode excluir tarefas de outros usuários.'
-				})
+		toDosApi.remove(task, (e: IMeteorError) => {
+			if (!e) {
+				showNotification({
+					type: 'success',
+					title: 'Tarefa excluída!',
+					message: `A tarefa ${task.title} foi excluída com sucesso!`
+				});
 			}
-		else {
-			toDosApi.remove(task);
-		}
+			else {
+				showNotification({
+					type: 'error',
+					title: 'Erro ao excluir tarefa',
+					message: e.reason || 'Ocorreu um erro ao tentar excluir a tarefa.'
+				});
+			}
+		});
 	}, []);
 
 	const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: string) => {

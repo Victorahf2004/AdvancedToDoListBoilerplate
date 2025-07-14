@@ -20,6 +20,7 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 
 		const self = this;
 		this.beforeUpdate = this.beforeUpdate.bind(this);
+		this.beforeRemove = this.beforeRemove.bind(this);
 		this.addTransformedPublication(
 			'toDosList',
 			(filter = {}, options = {}) => {
@@ -64,6 +65,16 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 		return result;
 	}
 	
+	async beforeRemove(_docObj: any, _context: IContext) {
+		const user: User | null = await Meteor.userAsync();
+		const userId = user?._id;
+		const docId = _docObj._id;
+		const originalDoc = await this.getCollectionInstance().findOneAsync({_id: docId});
+		if (userId != originalDoc.createdby){
+			throw new Meteor.Error("not-authorized", "Você não pode remover o documento de outro usuário");
+		}
+		return super.beforeRemove(_docObj, _context);
+	}
 	async beforeUpdate(_docObj: IDoc | Partial<IDoc>, _context: IContext) {
 		const user: User | null = await Meteor.userAsync();
 		const userId = user?._id;
