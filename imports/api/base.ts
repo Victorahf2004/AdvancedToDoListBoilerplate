@@ -196,6 +196,7 @@ export class ApiBase<Doc extends IDoc> {
 	insert(docObj: any, callback: any) {
 		const newObj: { [key: string]: any } = { _id: docObj._id };
 		const schema = this.getSchema();
+		console.log("O método de insert é esse")
 		Object.keys(docObj).forEach((key) => {
 			if (
 				!!schema[key] &&
@@ -219,6 +220,7 @@ export class ApiBase<Doc extends IDoc> {
 			console.log(e, r);
 		}
 	) {
+		console.log("O método de update é esse")
 		const newObj: { [key: string]: any } = { _id: docObj._id };
 		const schema = this.schema;
 		Object.keys(docObj).forEach((key) => {
@@ -232,7 +234,10 @@ export class ApiBase<Doc extends IDoc> {
 				newObj[key] = docObj[key];
 			}
 		});
-		console.log('Update Object:', newObj);
+		// if (docObj.createdby != (this.userId)){
+		// 	console.log("O id de usuário atual é: ", this.userId);
+		// 	throw new Meteor.Error("not-authorized", "Você não pode editar tarefas de outros usuários.")
+		// }
 		return this.callMethod('update', newObj, callback);
 	}
 

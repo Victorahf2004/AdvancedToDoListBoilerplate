@@ -10,6 +10,7 @@ import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext
 import { IAba } from '/imports/ui/components/sysTabs/sysTabs';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import { confirmDialogStyles } from '/imports/ui/appComponents/showDialog/custom/confirmDialog/confirmDialogStyles';
+import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -56,8 +57,8 @@ const ToDosListController = () => {
 	const [config, setConfig] = React.useState<IInitialConfig>(initialConfig);
 	const { user } = useContext<IAuthContext>(AuthContext);
 	const { showNotification } = useContext(AppLayoutContext);
-	const { title, type, typeMulti } = toDosApi.getSchema();
-	const toDosSchReduzido = { title, type, typeMulti, createdat: { type: Date, label: 'Criado em' } };
+	const { descricao, situacao, ehTarefaPessoal, owner } = toDosApi.getSchema();
+	const toDosSchReduzido = { descricao, situacao, ehTarefaPessoal, owner, createdat: { type: Date, label: 'Criado em' } };
 	const navigate = useNavigate();
 	const abas: IAba[] = [
 		{ label: "Minhas Tarefas", value: "0"},
@@ -138,16 +139,22 @@ const ToDosListController = () => {
 	}, []);
 
 	const onDeleteButtonClick = useCallback((task: any) => {
-		if (task.owner != user?.username){
-			showNotification({
-				type: 'error',
-				title: 'Ação não permitida!',
-				message: 'Você não pode excluir tarefas de outros usuários.'
-				})
+		toDosApi.remove(task, (e: IMeteorError) => {
+			if (!e) {
+				showNotification({
+					type: 'success',
+					title: 'Tarefa excluída!',
+					message: `A tarefa ${task.title} foi excluída com sucesso!`
+				});
 			}
-		else {
-			toDosApi.remove(task);
-		}
+			else {
+				showNotification({
+					type: 'error',
+					title: 'Erro ao excluir tarefa',
+					message: e.reason || 'Ocorreu um erro ao tentar excluir a tarefa.'
+				});
+			}
+		});
 	}, []);
 
 	const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: string) => {
@@ -163,7 +170,7 @@ const ToDosListController = () => {
 		const delayedSearch = setTimeout(() => {
 			setConfig((prev) => ({
 				...prev,
-				filter: { ...prev.filter, title: { $regex: value.trim(), $options: 'i' } }
+				filter: { ...prev.filter, descricao: { $regex: value.trim(), $options: 'i' } }
 			}));
 		}, 1000);
 		return () => clearTimeout(delayedSearch);
@@ -176,12 +183,12 @@ const ToDosListController = () => {
 				...prev,
 				filter: {
 					...prev.filter,
-					type: { $ne: null }
+					situacao: { $ne: null }
 				}
 			}));
 			return;
 		}
-		setConfig((prev) => ({ ...prev, filter: { ...prev.filter, type: value } }));
+		setConfig((prev) => ({ ...prev, filter: { ...prev.filter, situacao: value } }));
 	}, []);
 
 	const providerValues: IToDosListContollerContext = useMemo(

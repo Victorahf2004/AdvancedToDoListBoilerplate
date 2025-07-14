@@ -11,6 +11,8 @@ import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { IUserProfile } from 'imports/modules/userprofile/api/userProfileSch';
 import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 
 
 interface IToDosDetailContollerContext {
@@ -48,7 +50,6 @@ const ToDosDetailController = () => {
 	}, []);
 
 	const onSubmit = useCallback((doc: IToDos) => {
-		console.log("OIIIIIIIIIIIIIIIIIIIIIIIIIII");
 		const selectedAction = state === 'create' ? 'insert' : 'update';
 		toDosApi[selectedAction](doc, (e: IMeteorError) => {
 			if (!e) {
@@ -58,21 +59,14 @@ const ToDosDetailController = () => {
 					title: 'Operação realizada!',
 					message: `O exemplo foi ${selectedAction === 'update' ? 'atualizado' : 'cadastrado'} com sucesso!`
 				});
-			} 
-			else if (doc.owner != user?.username){
-				showNotification({
-					type: 'error',
-					title: 'Ação não permitida!',
-					message: 'Você não pode editar tarefas de outros usuários.'
-				})
 			}
 			else {
 				showNotification({
 					type: 'error',
-					title: 'Operação não realizada!',
-					message: `Erro ao realizar a operação: ${e.reason}`
+					title: 'Erro ao realizar operação',
+					message: e.reason || 'Ocorreu um erro ao tentar salvar o exemplo.'
 				});
-			}
+			} 
 		});
 	}, [document, state, user]);
 
@@ -86,7 +80,13 @@ const ToDosDetailController = () => {
 				onSubmit,
 				changeToEdit
 			}}>
-			{<ToDosDetailView />}
+			{state == "view"? (
+				<Dialog open={true} onClose={closePage} fullWidth maxWidth="md">
+					<DialogContent>
+						<ToDosDetailView />
+					</DialogContent>
+				</Dialog>): 
+				<ToDosDetailView />}
 		</ToDosDetailControllerContext.Provider>
 	);
 };
