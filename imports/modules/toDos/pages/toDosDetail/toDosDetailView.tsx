@@ -40,7 +40,7 @@ const ToDosDetailView = () => {
 					</IconButton>
 				)}
 				<Typography variant="h5" sx={{ flexGrow: 1 }}>
-					{isCreate ? 'Adicionar Item' : isEdit ? 'Editar Item' : controller.document.title}
+					{isCreate ? 'Adicionar Item' : isEdit ? 'Editar Item' : controller.document.descricao}
 				</Typography>
 				<IconButton
 					onClick={!isView ? controller.closePage : () => controller.changeToEdit(controller.document._id || '')}>
@@ -55,25 +55,17 @@ const ToDosDetailView = () => {
 				loading={controller.loading}>
 				<Body>
 					<FormColumn>
-						<SysTextField name="title" placeholder="Ex.: Item XX" />
-						<SysSelectField name="type" placeholder="Selecionar" />
-						<SysRadioButton name="typeMulti" childrenAlignment="row" size="small" />
 						<SysTextField
-							name="description"
-							placeholder="Acrescente informações sobre o item (3 linhas)"
+							name="descricao"
+							placeholder="Acrescente informações sobre a tarefa (3 linhas)"
 							multiline
 							rows={3}
 							maxRows={3}
 							showNumberCharactersTyped
 							max={200}
 						/>
-						<SysSwitch name="ehTarefaPessoal" label="Tarefa Pessoal?" />
-						<SysUploadFile name="files" />
-						<SysSlider name="slider" />
-						<SysLocationField name="address" />
-					</FormColumn>
-					<FormColumn>
-						<SysCheckBox name="check" childrenAlignment="row" />
+						<SysSelectField name="situacao" placeholder="Selecionar" />
+						<SysSwitch name="ehTarefaPessoal" label="Tipo" />
 					</FormColumn>
 				</Body>
 				<Footer>

@@ -25,7 +25,7 @@ const ToDosListView = () => {
     LoadingContainer,
     SearchContainer
   } = ToDosListStyles;
-	const options = [{ value: '', label: 'Nenhum' }, ...(controller.schema.type.options?.() ?? [])];
+	const options = [{ value: '', label: 'Nenhum' }, ...(controller.schema.situacao.options?.() ?? [])];
   	console.log("ValorTab", controller.valueTab);
 	console.log("Numero de páginas", controller.totalPaginas);
 	return (
