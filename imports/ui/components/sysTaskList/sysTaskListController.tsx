@@ -11,6 +11,7 @@ import { ISchema } from '/imports/typings/ISchema';
 import { IToDos } from "/imports/modules/toDos/api/toDosSch";
 
 interface ISysTaskListControllerContext {
+    tasksCompleto: IToDos[];
     tasksConcluidas: (string | undefined)[];
     tasksPendentes: (string | undefined)[];
 }
@@ -31,6 +32,7 @@ const SysTaskListController: React.FC<{tasks: IToDos[], telaInicial: boolean, on
 
     const providerValues: ISysTaskListControllerContext = useMemo(
         () => ({
+            tasksCompleto: tasks,
             tasksConcluidas: gerandoTasksConcluidas(),
             tasksPendentes: gerandoTasksPendentes(),
         }),

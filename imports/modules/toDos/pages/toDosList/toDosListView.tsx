@@ -39,13 +39,6 @@ const ToDosListView = () => {
 					onChange={controller.onChangeTextField}
 					startAdornment={<SysIcon name={'search'} />}
 				/>
-				<SysSelectField
-					name="Category"
-					label="Categoria"
-					options={options}
-					placeholder="Selecionar"
-					onChange={controller.onChangeCategory}
-				/>
 			</SearchContainer>
 			{controller.loading ? (
 				<LoadingContainer>

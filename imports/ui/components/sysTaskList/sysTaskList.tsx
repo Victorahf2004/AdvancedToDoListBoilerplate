@@ -17,22 +17,41 @@ const SysTaskList: React.FC<{telaInicial: boolean, onEdit: any, onDelete: any}> 
 
     return (
         <>
-            <SysAccordion titulo={`Não Concluídas (${controller.tasksPendentes.length})`} expandIcon={ <SysIcon name={"arrowDropDown"} /> } aberta={true} posicaoIcone={"inicio"} conteudo={
-            <List>
-                {controller.tasksPendentes.map((taskId) => (
-                    <SysTaskListItemController key={taskId} taskId={taskId} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
-                ))}
-                <Divider />
-            </List>
-            } />
-            <SysAccordion titulo={`Concluídas (${controller.tasksConcluidas.length})`} expandIcon={ <SysIcon name={"arrowDropDown"} /> } aberta={true} posicaoIcone={"inicio"} conteudo={
-            <List>
-                {controller.tasksConcluidas.map((taskId) => (
-                    <SysTaskListItemController key={taskId} taskId={taskId} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
-                ))}
-                <Divider />
-            </List>
-            } />
+            {telaInicial? (
+                <>
+                <List>
+                    {controller.tasksCompleto.map((task) => (
+                        <SysTaskListItemController key={task._id} taskId={task._id} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
+                    ))}
+                </List>
+                </>
+            ): (
+                <>
+                <SysAccordion titulo={`Não Concluídas (${controller.tasksPendentes.length})`} expandIcon={ <SysIcon name={"arrowDropDown"} /> } aberta={true} posicaoIcone={"inicio"} conteudo={
+                <List>
+                    {controller.tasksPendentes.map((taskId) => (
+                        <React.Fragment key={taskId}>
+                            <Divider />
+                                <SysTaskListItemController key={taskId} taskId={taskId} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
+                            <Divider />
+                        </React.Fragment>
+                    ))}
+                </List>
+                } />
+                <SysAccordion titulo={`Concluídas (${controller.tasksConcluidas.length})`} expandIcon={ <SysIcon name={"arrowDropDown"} /> } aberta={true} posicaoIcone={"inicio"} conteudo={
+                <List>
+                    {controller.tasksConcluidas.map((taskId) => (
+                        <React.Fragment key={taskId}>
+                            <Divider />
+                                <SysTaskListItemController key={taskId} taskId={taskId} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
+                            <Divider />
+                        </React.Fragment>
+                    ))}
+                </List>
+                } />
+                </>
+            )
+            }
         </>
     )
 }
