@@ -12,7 +12,7 @@ import ToDosListStyles from './toDosListStyles';
 import SysTextField from '/imports/ui/components/sysFormFields/sysTextField/sysTextField';
 import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
-import SysTaskList from '/imports/ui/components/sysTaskList/sysTaskList';
+import SysTaskListController from '/imports/ui/components/sysTaskList/sysTaskListController';
 import { SysTabs } from '/imports/ui/components/sysTabs/sysTabs';
 import Pagination from '@mui/material/Pagination';
 
@@ -54,7 +54,7 @@ const ToDosListView = () => {
 				</LoadingContainer>
 			) : (
 				<Box sx={{ width: '100%' }}>
-					<SysTaskList tasks={controller.todoList} telaInicial={false} onEdit={controller.onEditButtonClick} onDelete={controller.onDeleteButtonClick}/>
+					<SysTaskListController tasks={controller.todoList} telaInicial={false} onEdit={controller.onEditButtonClick} onDelete={controller.onDeleteButtonClick}/>
 				</Box>
 			)}
 

@@ -39,7 +39,7 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
         let novoTipo: string = !situacao? "Concluída" : "Não Concluída";
         const novaTask: any = {
             ...task,
-            type: novoTipo,
+            situacao: novoTipo,
         }
         console.log(`Task antes: ${novaTask}`);
         toDosApi["update"](novaTask, (e: IMeteorError) => {
