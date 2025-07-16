@@ -11,8 +11,10 @@ import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
 import { IUserProfile } from 'imports/modules/userprofile/api/userProfileSch';
 import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
+import ToDosListController from '../toDosList/toDosListController';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
+import { ShowDrawer } from '/imports/ui/appComponents/showDrawer/showDrawer';
 
 
 interface IToDosDetailContollerContext {
@@ -80,13 +82,19 @@ const ToDosDetailController = () => {
 				onSubmit,
 				changeToEdit
 			}}>
-			{state == "view"? (
-				<Dialog open={true} onClose={closePage} fullWidth maxWidth="md">
-					<DialogContent>
+			<>
+				<ToDosListController />
+				{state == "create" || state == "edit"? (
+					<Dialog open={true} onClose={closePage}>
+						<DialogContent>
+							<ToDosDetailView />
+						</DialogContent>
+					</Dialog>): (
+					<ShowDrawer open={true} onClose={closePage} anchor={"right"}>
 						<ToDosDetailView />
-					</DialogContent>
-				</Dialog>): 
-				<ToDosDetailView />}
+					</ShowDrawer> )
+				}
+			</>
 		</ToDosDetailControllerContext.Provider>
 	);
 };
