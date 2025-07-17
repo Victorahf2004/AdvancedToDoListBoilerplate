@@ -90,7 +90,7 @@ const ToDosDetailController = () => {
 							<ToDosDetailView />
 						</DialogContent>
 					</Dialog>): (
-					<ShowDrawer open={true} onClose={closePage} anchor={"right"}>
+					<ShowDrawer open={true} onClose={closePage} anchor={"right"} variant={"persistent"}>
 						<ToDosDetailView />
 					</ShowDrawer> )
 				}

@@ -10,18 +10,14 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { ISchema } from '/imports/typings/ISchema';
 import { IToDos } from "/imports/modules/toDos/api/toDosSch";
 
-interface IInitialConfig {
-    sortProperties: { field: string; sortAscending: boolean };
-    filter: Object;
-    searchBy: string | null;
-    viewComplexTable: boolean;
-}
-
 interface ISysTaskListItemControllerContext {
     task: Partial<IToDos>;
     situacao: boolean;
     checkBoxClick: () => void;
     seeTaskInfo: (task: Partial<IToDos>) => void;
+    anchorEl: null | Element;
+    openMenu: (event: React.MouseEvent<Element>) => void;
+    closeMenu: () => void;
 }
 
 export const SysTaskListItemControllerContext = React.createContext<ISysTaskListItemControllerContext>(
@@ -30,10 +26,19 @@ export const SysTaskListItemControllerContext = React.createContext<ISysTaskList
 
 const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
 
+    const [anchorEl, setAnchorEl] = React.useState<null | Element>(null);
     const task: Partial<IToDos> = useTracker(() => toDosApi.findOne({_id: taskId}));
     let situacao: boolean = task?.situacao === "Concluída";
     const navigate = useNavigate();
     const { showNotification } = useContext(AppLayoutContext);
+
+    const openMenu = (event: React.MouseEvent<Element>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const closeMenu = () => {
+        setAnchorEl(null);
+    };
 
     const checkBoxClick = () => {
         let novoTipo: string = !situacao? "Concluída" : "Não Concluída";
@@ -70,6 +75,9 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
             situacao,
             checkBoxClick,
             seeTaskInfo,
+            anchorEl,
+            openMenu,
+            closeMenu,
         }),
         [task]
     );

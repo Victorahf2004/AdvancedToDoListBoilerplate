@@ -15,11 +15,15 @@ import { SysTaskListItemControllerContext } from "./sysTaskListItemController";
 import { SysTabs } from "../sysTabs/sysTabs";
 import ButtonBase from '@mui/material/ButtonBase';
 import { useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
     
-    const {task, situacao, checkBoxClick, seeTaskInfo} = useContext(SysTaskListItemControllerContext);
+    const {task, situacao, checkBoxClick, seeTaskInfo, anchorEl, openMenu, closeMenu} = useContext(SysTaskListItemControllerContext);
     const navigate = useNavigate();
+    const open = Boolean(anchorEl);
 
     return (
         <ListItem>
@@ -34,14 +38,21 @@ const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolea
                 }
             />
             {!telaInicial && (
-                <>
-                <SysButton onClick={() => onEdit(task)}>
-                    <SysIcon name={"edit"} />
-                </SysButton>
-                <SysButton onClick={() => onDelete(task)}>
-                    <SysIcon name={"delete"} />
-                </SysButton>
-                </>
+                <Box display="flex" justifyContent={"flex-end"} width="100%">
+                    <ButtonBase onClick={openMenu}>
+                        <SysIcon name={"moreVert"} onClick={openMenu}/>
+                    </ButtonBase>
+                    <Menu open={open} onClose={closeMenu} anchorEl={anchorEl}>
+                        <MenuItem onClick={() => onEdit(task)}>
+                            <SysIcon name={"edit"} />
+                            Editar
+                        </MenuItem>
+                        <MenuItem onClick={() => onDelete(task)}>
+                            <SysIcon name={"delete"} />
+                            Excluir
+                        </MenuItem>
+                    </Menu>
+                </Box>
             )}
         </ListItem>
     )
