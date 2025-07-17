@@ -57,8 +57,8 @@ const ToDosListController = () => {
 	const [config, setConfig] = React.useState<IInitialConfig>(initialConfig);
 	const { user } = useContext<IAuthContext>(AuthContext);
 	const { showNotification } = useContext(AppLayoutContext);
-	const { descricao, situacao, ehTarefaPessoal, owner } = toDosApi.getSchema();
-	const toDosSchReduzido = { descricao, situacao, ehTarefaPessoal, owner, createdat: { type: Date, label: 'Criado em' } };
+	const { titulo, situacao, ehTarefaPessoal, owner } = toDosApi.getSchema();
+	const toDosSchReduzido = { titulo, situacao, ehTarefaPessoal, owner, createdat: { type: Date, label: 'Criado em' } };
 	const navigate = useNavigate();
 	const abas: IAba[] = [
 		{ label: "Minhas Tarefas", value: "0"},
@@ -170,7 +170,7 @@ const ToDosListController = () => {
 		const delayedSearch = setTimeout(() => {
 			setConfig((prev) => ({
 				...prev,
-				filter: { ...prev.filter, descricao: { $regex: value.trim(), $options: 'i' } }
+				filter: { ...prev.filter, titulo: { $regex: value.trim(), $options: 'i' } }
 			}));
 		}, 1000);
 		return () => clearTimeout(delayedSearch);

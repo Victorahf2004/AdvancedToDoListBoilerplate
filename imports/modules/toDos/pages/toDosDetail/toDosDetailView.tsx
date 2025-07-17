@@ -16,6 +16,8 @@ import SysSlider from '/imports/ui/components/sysFormFields/sysSlider/sysSliderF
 import SysSwitch from '/imports/ui/components/sysFormFields/sysSwitch/sysSwitch';
 import { SysLocationField } from '/imports/ui/components/sysFormFields/sysLocationField/sysLocationField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const ToDosDetailView = () => {
 	const controller = useContext(ToDosDetailControllerContext);
@@ -55,6 +57,13 @@ const ToDosDetailView = () => {
 				loading={controller.loading}>
 				<Body>
 					<FormColumn>
+						{state == "view"? (
+							<FormControlLabel control={<Checkbox checked={Boolean(controller.document.situacao)} onChange={controller.checkBoxClick} />} label={
+								<Typography variant="body1">{controller.document.titulo}</Typography>
+							}/>
+						): (
+							<SysTextField name='titulo' />
+						)}
 						<SysTextField
 							name="descricao"
 							placeholder="Acrescente informações sobre a tarefa (3 linhas)"
@@ -64,8 +73,7 @@ const ToDosDetailView = () => {
 							showNumberCharactersTyped
 							max={200}
 						/>
-						<SysSelectField name="situacao" placeholder="Selecionar" />
-						<SysSwitch name="ehTarefaPessoal" label="Tipo" />
+						<SysSwitch name="ehTarefaPessoal" label="É tarefa pessoal?" />
 					</FormColumn>
 				</Body>
 				<Footer>

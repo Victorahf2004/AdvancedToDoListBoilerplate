@@ -24,6 +24,7 @@ interface IToDosDetailContollerContext {
 	schema: ISchema<IToDos>;
 	onSubmit: (doc: IToDos) => void;
 	changeToEdit: (id: string) => void;
+	checkBoxClick: () => void;
 }
 
 export const ToDosDetailControllerContext = createContext<IToDosDetailContollerContext>(
@@ -50,6 +51,31 @@ const ToDosDetailController = () => {
 	const changeToEdit = useCallback((id: string) => {
 		navigate(`/toDos/edit/${id}`);
 	}, []);
+
+	const checkBoxClick = () => {
+		let novoTipo: string = !document.situacao? "Concluída" : "Não Concluída";
+		const novaTask: any = {
+			...document,
+			situacao: novoTipo,
+		}
+		console.log(`Task antes: ${novaTask}`);
+		toDosApi["update"](novaTask, (e: IMeteorError) => {
+			if (!e) {
+				showNotification({
+					type: 'success',
+					title: 'Operação realizada!',
+					message: `O exemplo foi atualizado com sucesso!`
+				});
+				console.log(`Task atualizada: ${novaTask}`);
+			} else {
+				showNotification({
+					type: 'error',
+					title: 'Operação não realizada!',
+					message: `Erro ao realizar a operação`
+				});
+			}
+		});
+	}
 
 	const onSubmit = useCallback((doc: IToDos) => {
 		const selectedAction = state === 'create' ? 'insert' : 'update';
@@ -80,7 +106,8 @@ const ToDosDetailController = () => {
 				loading,
 				schema: toDosApi.getSchema(),
 				onSubmit,
-				changeToEdit
+				changeToEdit,
+				checkBoxClick,
 			}}>
 			<>
 				<ToDosListController />
