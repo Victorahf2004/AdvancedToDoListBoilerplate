@@ -73,6 +73,7 @@ const ToDosDetailView = () => {
 							showNumberCharactersTyped
 							max={200}
 						/>
+						<SysSelectField name="situacao" placeholder="Selecionar" />
 						<SysSwitch name="ehTarefaPessoal" label="É tarefa pessoal?" />
 					</FormColumn>
 				</Body>

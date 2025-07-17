@@ -1,4 +1,3 @@
-import { truncate } from 'fs';
 import { IDoc } from '/imports/typings/IDoc';
 import { ISchema } from '/imports/typings/ISchema';
 
@@ -23,13 +22,18 @@ export const toDosSch: ISchema<IToDos> = {
 		label: 'Situação',
 		defaultValue: 'Não Concluída',
 		optional: true,
+		visibilityFunction: () => false,
+		options: () => [
+			{ value: 'Não Concluída', label: 'Não Concluída' },
+			{ value: 'Concluída', label: 'Concluída' },
+		]
 	},
 	
 	ehTarefaPessoal: {
 		type: Boolean,
-		label: 'É Tarefa Pessoal?',
+		label: 'Tipo',
 		defaultValue: false,
-		optional: true,
+		optional: false,
 	},
 
 	// tasks: {
@@ -62,7 +66,7 @@ export const toDosSch: ISchema<IToDos> = {
 };
 
 export interface IToDos extends IDoc {
-	titulo: string,
+	titulo: string;
 	descricao: string;
 	situacao: string;
 	ehTarefaPessoal: boolean;
