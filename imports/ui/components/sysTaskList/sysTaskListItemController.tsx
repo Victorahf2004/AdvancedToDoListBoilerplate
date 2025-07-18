@@ -46,7 +46,7 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
             ...task,
             situacao: novoTipo,
         }
-        console.log(`Task antes: ${novaTask}`);
+        console.log(`Task antes: ${JSON.stringify(novaTask)}`);
         toDosApi["update"](novaTask, (e: IMeteorError) => {
             if (!e) {
                 showNotification({
@@ -54,7 +54,7 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
                     title: 'Operação realizada!',
                     message: `O exemplo foi atualizado com sucesso!`
                 });
-                console.log(`Task atualizada: ${novaTask}`);
+                console.log(`Task atualizada: ${JSON.stringify(novaTask)}`);
             } else {
                 showNotification({
                     type: 'error',

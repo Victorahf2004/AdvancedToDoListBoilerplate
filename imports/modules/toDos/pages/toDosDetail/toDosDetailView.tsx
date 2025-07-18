@@ -25,6 +25,7 @@ const ToDosDetailView = () => {
 	const isView = state === 'view';
 	const isEdit = state === 'edit';
 	const isCreate = state === 'create';
+	const ehConcluida = controller.document.situacao === 'Concluída';
   const {
     Container,
     Body,
@@ -42,7 +43,7 @@ const ToDosDetailView = () => {
 					</IconButton>
 				)}
 				<Typography variant="h5" sx={{ flexGrow: 1 }}>
-					{isCreate ? 'Adicionar Item' : isEdit ? 'Editar Item' : controller.document.descricao}
+					{isCreate ? 'Adicionar Item' : isEdit ? 'Editar Item' : ""}
 				</Typography>
 				<IconButton
 					onClick={!isView ? controller.closePage : () => controller.changeToEdit(controller.document._id || '')}>
@@ -58,7 +59,7 @@ const ToDosDetailView = () => {
 				<Body>
 					<FormColumn>
 						{state == "view"? (
-							<FormControlLabel control={<Checkbox checked={Boolean(controller.document.situacao)} onChange={controller.checkBoxClick} />} label={
+							<FormControlLabel control={<Checkbox checked={ehConcluida} />} label={
 								<Typography variant="body1">{controller.document.titulo}</Typography>
 							}/>
 						): (

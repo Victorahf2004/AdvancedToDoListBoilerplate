@@ -21,8 +21,8 @@ export const toDosSch: ISchema<IToDos> = {
 		type: String,
 		label: 'Situação',
 		defaultValue: 'Não Concluída',
-		optional: true,
-		visibilityFunction: () => false,
+		optional: false,
+		// visibilityFunction: () => false,
 		options: () => [
 			{ value: 'Não Concluída', label: 'Não Concluída' },
 			{ value: 'Concluída', label: 'Concluída' },
