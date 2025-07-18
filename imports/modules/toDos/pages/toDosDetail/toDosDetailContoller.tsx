@@ -44,6 +44,7 @@ const ToDosDetailController = () => {
 		};
 	}, [id]);
 
+	const task: Partial<IToDos> =  toDosApi.findOne({ _id: id });
 	const closePage = useCallback(() => {
 		navigate(-1);
 	}, []);

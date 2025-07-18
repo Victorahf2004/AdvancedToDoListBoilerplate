@@ -19,7 +19,6 @@ export const toDosSch: ISchema<IToDos> = {
 	
 	situacao: {
 		type: String,
-		label: 'Situação',
 		defaultValue: 'Não Concluída',
 		optional: false,
 		// visibilityFunction: () => false,
