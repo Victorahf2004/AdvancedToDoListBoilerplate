@@ -26,6 +26,11 @@ interface IToDosDetailContollerContext {
 	schema: ISchema<IToDos>;
 	onSubmit: (doc: IToDos) => void;
 	changeToEdit: (id: string) => void;
+	anchorEl: null | Element;
+	openMenu: (event: React.MouseEvent<Element>) => void;
+	closeMenu: () => void;
+	onDeleteButtonClick: (task: any) => void;
+	task: Partial<IToDos>;
 }
 
 export const ToDosDetailControllerContext = createContext<IToDosDetailContollerContext>(
@@ -34,6 +39,7 @@ export const ToDosDetailControllerContext = createContext<IToDosDetailContollerC
 
 const ToDosDetailController = () => {
 	const navigate = useNavigate();
+	const [anchorEl, setAnchorEl] = React.useState<null | Element>(null);
 	const { id, state } = useContext(ToDosModuleContext);
 	const { showNotification } = useContext(AppLayoutContext);
 	const { user } = useContext<IAuthContext>(AuthContext);
@@ -46,7 +52,16 @@ const ToDosDetailController = () => {
 		};
 	}, [id]);
 
-	const task: Partial<IToDos> =  toDosApi.findOne({ _id: id });
+	const task: Partial<IToDos> = useTracker(() => toDosApi.findOne({_id: document._id}));
+
+	const openMenu = (event: React.MouseEvent<Element>) => {
+		setAnchorEl(event.currentTarget);
+	};
+	
+	const closeMenu = () => {
+		setAnchorEl(null);
+	};
+		
 	const closePage = useCallback(() => {
 		navigate(-1);
 	}, []);
@@ -75,6 +90,26 @@ const ToDosDetailController = () => {
 		});
 	}, [document, state, user]);
 
+	const onDeleteButtonClick = useCallback((task: any) => {	
+		const tituloTarefa = task.title;
+		toDosApi.remove(task, (e: IMeteorError) => {
+				if (!e) {
+					showNotification({
+						type: 'success',
+						title: 'Tarefa excluída!',
+						message: `A tarefa foi excluída com sucesso!`
+					});
+				}
+				else {
+					showNotification({
+						type: 'error',
+						title: 'Erro ao excluir tarefa',
+						message: e.reason || 'Ocorreu um erro ao tentar excluir a tarefa.'
+					});
+				}
+			});
+		closePage();
+		}, []);
 	return (
 		<ToDosDetailControllerContext.Provider
 			value={{
@@ -84,6 +119,11 @@ const ToDosDetailController = () => {
 				schema: toDosApi.getSchema(),
 				onSubmit,
 				changeToEdit,
+				anchorEl,
+				openMenu,
+				closeMenu,
+				onDeleteButtonClick,
+				task,
 			}}>
 			<>
 				{state == "create" || state == "edit"? (
