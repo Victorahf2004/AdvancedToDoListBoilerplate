@@ -15,6 +15,8 @@ import ToDosListController from '../toDosList/toDosListController';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { ShowDrawer } from '/imports/ui/appComponents/showDrawer/showDrawer';
+import SysAppBarController from '/imports/ui/templates/components/sysAppBar/sysAppBarController';
+import { Box } from '@mui/material';
 
 
 interface IToDosDetailContollerContext {
@@ -84,16 +86,26 @@ const ToDosDetailController = () => {
 				changeToEdit,
 			}}>
 			<>
-				<ToDosListController />
 				{state == "create" || state == "edit"? (
-					<Dialog open={true} onClose={closePage}>
-						<DialogContent>
-							<ToDosDetailView />
-						</DialogContent>
-					</Dialog>): (
-					<ShowDrawer open={true} onClose={closePage} anchor={"right"} variant={"persistent"}>
-						<ToDosDetailView />
-					</ShowDrawer> )
+					<>
+						<ToDosListController />
+						<Dialog open={true} onClose={closePage}>
+							<DialogContent>
+								<ToDosDetailView />
+							</DialogContent>
+						</Dialog>
+					</>
+					): (
+						<Box display={"flex"}>
+							<ToDosListController />
+							<ShowDrawer sx={{"flexGrow": 1}} open={true} onClose={closePage} anchor={"right"} variant={"permanent"}>
+								<Box display={"none"}>
+									<SysAppBarController />
+								</Box>
+								<ToDosDetailView />
+							</ShowDrawer>
+						</Box> 
+					)
 				}
 			</>
 		</ToDosDetailControllerContext.Provider>

@@ -16,14 +16,16 @@ export const HomeView: React.FC = () => {
     return (
         <Container>
             <Header>
-                <Typography variant="h3">Olá, {user?.username} este é o Home 2 </Typography>
-                <Typography variant="body1" textAlign={'justify'}>
-                    Bem vindo ao Advanced To Do List com BoilerPlate!
-                </Typography>
+                <Typography variant="h3">Olá, {user?.username} </Typography>
             </Header>
-            <Typography variant="h3">Atividades Recentes </Typography>
+            <Typography variant="body1">
+                Seus projetos muito mais organizados. Veja as tarefas adicionadas por seu time, por você e para você!
+            </Typography>
+            <Typography variant="h3"> Adicionadas Recentemente</Typography>
             <SysTaskListController tasks={controller.todoList} telaInicial={true} onEdit={false} onDelete={false}/>
-            <SysButton onClick={controller.onTaskButtonClick}> {"Ir para Tarefas >>>"} </SysButton>
+            <Box display={"flex"} justifyContent={"center"} width={"100%"} >
+                <SysButton onClick={controller.onTaskButtonClick}> {"Ir para Tarefas >>>"} </SysButton>
+            </Box>
         </Container>
     );
 }

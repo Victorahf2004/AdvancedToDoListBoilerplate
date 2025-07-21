@@ -30,7 +30,6 @@ const ToDosListView = () => {
 	console.log("Numero de páginas", controller.totalPaginas);
 	return (
 		<Container>
-			<Typography variant="h5">Testeeeeeeeeee</Typography>
 			<SysTabs abas={controller.abas} value={controller.valueTab} handleChange={controller.handleTabChange}/>
 			<SearchContainer>
 				<SysTextField
@@ -50,15 +49,18 @@ const ToDosListView = () => {
 					<SysTaskListController tasks={controller.todoList} telaInicial={false} onEdit={controller.onEditButtonClick} onDelete={controller.onDeleteButtonClick}/>
 				</Box>
 			)}
-
+			<Box display={"flex"} justifyContent={"center"} width={"100%"}>
+				<Pagination count={controller.totalPaginas} page={controller.pageAtual} onChange={controller.alterarPagina} size="large" />
+			</Box>
+			<Box display={"flex"} justifyContent={"center"} width={"100%"}>
 			<SysFab
-				variant="extended"
-				text="Adicionar"
-				startIcon={<SysIcon name={'add'} />}
-				fixed={true}
-				onClick={controller.onAddButtonClick}
-			/>
-			<Pagination count={controller.totalPaginas} page={controller.pageAtual} onChange={controller.alterarPagina} size="large" />
+					variant="extended"
+					text="Adicionar"
+					startIcon={<SysIcon name={'add'} />}
+					// fixed={true}
+					onClick={controller.onAddButtonClick}
+				/>
+			</Box>
 		</Container>
 	);
 };

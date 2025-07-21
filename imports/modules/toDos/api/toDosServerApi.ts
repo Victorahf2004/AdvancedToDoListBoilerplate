@@ -4,6 +4,7 @@ import { toDosSch, IToDos } from './toDosSch';
 import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
 import { ProductServerBase } from '/imports/api/productServerBase';
 import { IUserProfile } from '../../userprofile/api/userProfileSch';
+import { Meteor } from 'meteor/meteor';
 import { IMeteorUser } from 'imports/modules/userprofile/api/userProfileSch';
 import User = Meteor.User;
 import { String } from 'lodash';
@@ -31,6 +32,10 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 			},
 			async (doc: IToDos & { nomeUsuario: string }) => {
 				const userProfileDoc: (Partial<IUserProfile>) = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
+				const user: (User | IMeteorUser) | null = await Meteor.userAsync();
+				if ((userProfileDoc && user) && (userProfileDoc.username == user.username)){
+					return { ...doc, owner: "Você" };
+				}
 				return { ...doc, owner: userProfileDoc?.username || 'Usuário Desconhecido' };
 			}
 		);
