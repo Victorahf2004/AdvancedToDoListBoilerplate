@@ -14,7 +14,7 @@ export const HomeView: React.FC = () => {
     const { user } = useContext<IAuthContext>(AuthContext);
     const controller = useContext(HomeControllerContext);
     return (
-        <Container>
+        <Container sx={{ "width": "100%", "height": "100%"}}>
             <Header>
                 <Typography variant="h3">Olá, {user?.username} </Typography>
             </Header>
