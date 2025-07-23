@@ -37,23 +37,21 @@ const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolea
                     </ButtonBase>
                 }
             />
-            {!telaInicial && (
-                <Box display="flex" justifyContent={"flex-end"} width="100%">
-                    <ButtonBase onClick={openMenu}>
-                        <SysIcon name={"moreVert"} onClick={openMenu}/>
-                    </ButtonBase>
-                    <Menu open={open} onClose={closeMenu} anchorEl={anchorEl}>
-                        <MenuItem onClick={() => onEdit(task)}>
-                            <SysIcon name={"edit"} />
-                            Editar
-                        </MenuItem>
-                        <MenuItem onClick={() => onDelete(task)}>
-                            <SysIcon name={"delete"} />
-                            Excluir
-                        </MenuItem>
-                    </Menu>
-                </Box>
-            )}
+            <Box display="flex" justifyContent={"flex-end"} width="100%">
+                <ButtonBase onClick={openMenu}>
+                    <SysIcon name={"moreVert"} onClick={openMenu}/>
+                </ButtonBase>
+                <Menu open={open} onClose={closeMenu} anchorEl={anchorEl}>
+                    <MenuItem onClick={() => onEdit(task)}>
+                        <SysIcon name={"edit"} />
+                        Editar
+                    </MenuItem>
+                    <MenuItem onClick={() => onDelete(task)}>
+                        <SysIcon name={"delete"} />
+                        Excluir
+                    </MenuItem>
+                </Menu>
+            </Box>
         </ListItem>
     )
 }

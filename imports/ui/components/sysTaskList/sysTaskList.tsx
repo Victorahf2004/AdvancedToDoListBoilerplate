@@ -21,7 +21,11 @@ const SysTaskList: React.FC<{telaInicial: boolean, onEdit: any, onDelete: any}> 
                 <>
                 <List>
                     {controller.tasksCompleto.map((task) => (
-                        <SysTaskListItemController key={task._id} taskId={task._id} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
+                        <>
+                            <Divider />    
+                            <SysTaskListItemController key={task._id} taskId={task._id} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete}/>
+                            <Divider />
+                        </>
                     ))}
                 </List>
                 </>
