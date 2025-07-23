@@ -138,10 +138,7 @@ const ToDosDetailController = () => {
 					): (
 						<Box display={"flex"}>
 							<ToDosListController />
-							<ShowDrawer sx={{"flexGrow": 1}} open={true} onClose={closePage} anchor={"right"} variant={"permanent"}>
-								<Box display={"none"}>
-									<SysAppBarController />
-								</Box>
+							<ShowDrawer open={true} onClose={closePage} anchor={"right"} variant={"permanent"}>
 								<ToDosDetailView />
 							</ShowDrawer>
 						</Box> 

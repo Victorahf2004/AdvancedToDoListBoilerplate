@@ -10,13 +10,14 @@ import Divider from "@mui/material/Divider";
 import { SysAccordion } from "../sysAccordion/sysAccordion";
 import SysIcon from "../sysIcon/sysIcon";
 import React, {useEffect} from "react";
+import Box from "@mui/material/Box";
 
 const SysTaskList: React.FC<{telaInicial: boolean, onEdit: any, onDelete: any}> = ({ telaInicial, onEdit, onDelete }) => {
     let contador: number = 0;
     const controller = React.useContext(SysTaskListControllerContext);
 
     return (
-        <>
+        <Box sx={{ flexGrow: 1, width: '100%' }}>
             {telaInicial? (
                 <>
                 <List>
@@ -56,7 +57,7 @@ const SysTaskList: React.FC<{telaInicial: boolean, onEdit: any, onDelete: any}> 
                 </>
             )
             }
-        </>
+        </Box>
     )
 }
 
