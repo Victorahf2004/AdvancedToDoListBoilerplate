@@ -1,41 +1,19 @@
-import React, { createContext, useCallback, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import ToDosDetailView from './toDosDetailView';
 import { useNavigate } from 'react-router-dom';
 import { ToDosModuleContext } from '../../toDosContainer';
 import { useTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
 import { IToDos } from '../../api/toDosSch';
-import { ISchema } from '/imports/typings/ISchema';
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import AuthContext, { IAuthContext } from '/imports/app/authProvider/authContext';
-import { IUserProfile } from 'imports/modules/userprofile/api/userProfileSch';
-import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
 import ToDosListController from '../toDosList/toDosListController';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { ShowDrawer } from '/imports/ui/appComponents/showDrawer/showDrawer';
-import SysAppBarController from '/imports/ui/templates/components/sysAppBar/sysAppBarController';
 import { Box } from '@mui/material';
-
-
-interface IToDosDetailContollerContext {
-	closePage: () => void;
-	document: IToDos;
-	loading: boolean;
-	schema: ISchema<IToDos>;
-	onSubmit: (doc: IToDos) => void;
-	changeToEdit: (id: string) => void;
-	anchorEl: null | Element;
-	openMenu: (event: React.MouseEvent<Element>) => void;
-	closeMenu: () => void;
-	onDeleteButtonClick: (task: any) => void;
-	task: Partial<IToDos>;
-}
-
-export const ToDosDetailControllerContext = createContext<IToDosDetailContollerContext>(
-	{} as IToDosDetailContollerContext
-);
+import Context, { IToDosDetailContext } from './toDosDetailContext';
 
 const ToDosDetailController = () => {
 	const navigate = useNavigate();
@@ -110,21 +88,23 @@ const ToDosDetailController = () => {
 			});
 		closePage();
 		}, []);
+	
+	const contextValues: IToDosDetailContext = {
+		closePage,
+		document: { ...document, _id: id },
+		loading,
+		schema: toDosApi.getSchema(),
+		onSubmit,
+		changeToEdit,
+		anchorEl,
+		openMenu,
+		closeMenu,
+		onDeleteButtonClick,
+		task,
+	}
 	return (
-		<ToDosDetailControllerContext.Provider
-			value={{
-				closePage,
-				document: { ...document, _id: id },
-				loading,
-				schema: toDosApi.getSchema(),
-				onSubmit,
-				changeToEdit,
-				anchorEl,
-				openMenu,
-				closeMenu,
-				onDeleteButtonClick,
-				task,
-			}}>
+		<Context.Provider
+			value={contextValues}>
 			<>
 				{state == "create" || state == "edit"? (
 					<>
@@ -145,7 +125,7 @@ const ToDosDetailController = () => {
 					)
 				}
 			</>
-		</ToDosDetailControllerContext.Provider>
+		</Context.Provider>
 	);
 };
 

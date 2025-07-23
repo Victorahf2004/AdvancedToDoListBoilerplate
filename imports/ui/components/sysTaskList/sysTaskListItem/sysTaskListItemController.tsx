@@ -1,28 +1,14 @@
 import React, { useCallback, useMemo, useContext } from 'react';
-import SysTaskList from './sysTaskList';
-import SysTaskListItem from './sysTaskListItem';
+import SysTaskListItem from './sysTaskListItemView';
 import AppLayoutContext from "/imports/app/appLayoutProvider/appLayoutContext";
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import { toDosApi } from "/imports/modules/toDos/api/toDosApi";
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
-import { ISchema } from '/imports/typings/ISchema';
+import Context, { ISysTaskListItemContext } from "./sysTaskListItemContext";
 import { IToDos } from "/imports/modules/toDos/api/toDosSch";
 
-interface ISysTaskListItemControllerContext {
-    task: Partial<IToDos>;
-    situacao: boolean;
-    checkBoxClick: () => void;
-    seeTaskInfo: (task: Partial<IToDos>) => void;
-    anchorEl: null | Element;
-    openMenu: (event: React.MouseEvent<Element>) => void;
-    closeMenu: () => void;
-}
-
-export const SysTaskListItemControllerContext = React.createContext<ISysTaskListItemControllerContext>(
-    {} as ISysTaskListItemControllerContext
-);
 
 const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
 
@@ -69,7 +55,7 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
         navigate('/toDos/view/' + tarefa._id);
     }, []);
 
-    const providerValues: ISysTaskListItemControllerContext = useMemo(
+    const providerValues: ISysTaskListItemContext = useMemo(
         () => ({
             task,
             situacao,
@@ -83,9 +69,9 @@ const SysTaskListItemController: React.FC<{taskId: string | undefined, telaInici
     );
 
     return (
-        <SysTaskListItemControllerContext.Provider value={providerValues}>
+        <Context.Provider value={providerValues}>
             <SysTaskListItem taskId={taskId} telaInicial={telaInicial} onEdit={onEdit} onDelete={onDelete} />
-        </SysTaskListItemControllerContext.Provider>
+        </Context.Provider>
     );
 };
 

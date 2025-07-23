@@ -11,6 +11,7 @@ import { IAba } from '/imports/ui/components/sysTabs/sysTabs';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
 import { confirmDialogStyles } from '/imports/ui/appComponents/showDialog/custom/confirmDialog/confirmDialogStyles';
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
+import Context, { IToDosListContext } from './toDosListContext';
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -21,27 +22,6 @@ interface IInitialConfig {
 	pageAtual: number;
 	totalPaginas: number;
 }
-
-interface IToDosListContollerContext {
-	onAddButtonClick: () => void;
-	onDeleteButtonClick: (task: any) => void;
-	onEditButtonClick: (task: any) => void;
-	todoList: IToDos[];
-	schema: ISchema<any>;
-	loading: boolean;
-	onChangeTextField: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	onChangeCategory: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	valueTab: string;
-	handleTabChange: (event: React.SyntheticEvent, newValue: string) => void;
-	abas: IAba[];
-	pageAtual: number;
-	totalPaginas: number;
-	alterarPagina: (event: any, value: number) => void;
-}
-
-export const ToDosListControllerContext = React.createContext<IToDosListContollerContext>(
-	{} as IToDosListContollerContext
-);
 
 const initialConfig = {
 	sortProperties: { field: 'createdat', sortAscending: true },
@@ -191,7 +171,7 @@ const ToDosListController = () => {
 		setConfig((prev) => ({ ...prev, filter: { ...prev.filter, situacao: value } }));
 	}, []);
 
-	const providerValues: IToDosListContollerContext = useMemo(
+	const providerValues: IToDosListContext = useMemo(
 		() => ({
 			onAddButtonClick,
 			onDeleteButtonClick,
@@ -212,9 +192,9 @@ const ToDosListController = () => {
 	);
 
 	return (
-		<ToDosListControllerContext.Provider value={providerValues}>
+		<Context.Provider value={providerValues}>
 			<ToDosListView />
-		</ToDosListControllerContext.Provider>
+		</Context.Provider>
 	);
 };
 

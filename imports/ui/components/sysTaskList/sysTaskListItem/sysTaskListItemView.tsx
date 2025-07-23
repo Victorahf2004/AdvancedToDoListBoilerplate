@@ -10,9 +10,9 @@ import { SysButton } from "/imports/ui/components/SimpleFormFields/SysButton/Sys
 import { toDosApi } from "/imports/modules/toDos/api/toDosApi";
 import AppLayoutContext from "/imports/app/appLayoutProvider/appLayoutContext";
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
-import SysIcon from "../sysIcon/sysIcon";
-import { SysTaskListItemControllerContext } from "./sysTaskListItemController";
-import { SysTabs } from "../sysTabs/sysTabs";
+import SysIcon from "../../sysIcon/sysIcon";
+import SysTaskListItemContext, { ISysTaskListItemContext} from "./sysTaskListItemContext";
+import { SysTabs } from "../../sysTabs/sysTabs";
 import ButtonBase from '@mui/material/ButtonBase';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -21,7 +21,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 const SysTaskListItem: React.FC<{taskId: string | undefined, telaInicial: boolean, onEdit: any, onDelete: any}> = ({ taskId, telaInicial, onEdit, onDelete }) => {
     
-    const {task, situacao, checkBoxClick, seeTaskInfo, anchorEl, openMenu, closeMenu} = useContext(SysTaskListItemControllerContext);
+    const {task, situacao, checkBoxClick, seeTaskInfo, anchorEl, openMenu, closeMenu} = useContext<ISysTaskListItemContext>(SysTaskListItemContext);
     const navigate = useNavigate();
     const open = Boolean(anchorEl);
 

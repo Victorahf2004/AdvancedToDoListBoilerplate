@@ -3,12 +3,11 @@ import { HomeView } from './homeView';
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
-import { ISchema } from '/imports/typings/ISchema';
-import { IToDos } from '../../../modules/toDos/api/toDosSch';
 import { toDosApi } from '../../../modules/toDos/api/toDosApi';
 import { useContext } from 'react';
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
+import Context, { IHomeContext } from './homeContext';
 
 interface IInitialConfig {
     sortProperties: { field: string; sortAscending: boolean };
@@ -17,21 +16,6 @@ interface IInitialConfig {
     viewComplexTable: boolean;
     nome: String;
 }
-
-interface IHomeContollerContext {
-    onAddButtonClick: () => void;
-    onDeleteButtonClick: (row: any) => void;
-    onEditButtonClick: (task: any) => void;
-    onTaskButtonClick: () => void;
-    todoList: IToDos[];
-    loading: boolean;
-    onChangeTextField: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onChangeCategory: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export const HomeControllerContext = React.createContext<IHomeContollerContext>(
-    {} as IHomeContollerContext
-);
 
 const initialConfig = {
     sortProperties: { field: 'createdat', sortAscending: true },
@@ -119,7 +103,7 @@ const HomeController = () => {
         setConfig((prev) => ({ ...prev, filter: { ...prev.filter, type: value } }));
     }, []);
 
-    const providerValues: IHomeContollerContext = useMemo(
+    const providerValues: IHomeContext = useMemo(
         () => ({
             onAddButtonClick,
             onDeleteButtonClick,
@@ -134,9 +118,9 @@ const HomeController = () => {
     );
 
     return (
-        <HomeControllerContext.Provider value={providerValues}>
+        <Context.Provider value={providerValues}>
             <HomeView />
-        </HomeControllerContext.Provider>
+        </Context.Provider>
     );
 };
 
