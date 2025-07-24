@@ -40,13 +40,11 @@ const ToDosDetailView = () => {
 			<Header sx={isView? {justifyContent: "flex-end"}: {}}>
 				{isView? (
 					<>
-						<IconButton
-							onClick={!isView ? context.closePage : context.openMenu}>
-							{!isView ? <SysIcon name={'close'} /> : (
+						<IconButton onClick={!isView ? context.closePage : context.openMenu}>
+							{!isView ? <SysIcon name={'close'} /> : <SysIcon name={"moreVert"}/>}	
+						</IconButton> 
+						{isView ? (
 								<>
-								<ButtonBase>
-									<SysIcon name={"moreVert"}/>
-								</ButtonBase>
 								<Menu open={open} onClose={context.closeMenu} anchorEl={context.anchorEl}>
 									<MenuItem onClick={() => context.changeToEdit(context.document._id || '')}>
 										<SysIcon name={"edit"} />
@@ -58,8 +56,10 @@ const ToDosDetailView = () => {
 									</MenuItem>
 								</Menu>
 								</>
-							)}
-						</IconButton>
+						): (
+								<></>
+							)
+						}
 						<IconButton onClick={context.closePage}>
 							<SysIcon name={'close'} />
 						</IconButton>
