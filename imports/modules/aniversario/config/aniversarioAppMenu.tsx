@@ -4,8 +4,8 @@ import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 
 export const aniversarioMenuItemList: (IAppMenu | null)[] = [
 	{
-		path: '/aniversario',
-		name: 'Aniversários',
-		icon: <SysIcon name={'star'} />
+		// path: '/aniversario',
+		// name: 'Aniversários',
+		// icon: <SysIcon name={'star'} />
 	}
 ];

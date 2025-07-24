@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { ToDosDetailControllerContext } from './toDosDetailContoller';
-import { ToDosModuleContext } from '../../toDosContainer';
+import ToDosDetailContext, { IToDosDetailContext } from './toDosDetailContext';
+import { IToDosModuleContext, ToDosModuleContext } from '../../toDosContainer';
 import ToDosDetailStyles from './toDosDetailStyles';
 import SysForm from '/imports/ui/components/sysForm/sysForm';
 import SysTextField from '/imports/ui/components/sysFormFields/sysTextField/sysTextField';
@@ -8,21 +8,25 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
-import { SysRadioButton } from '/imports/ui/components/sysFormFields/sysRadioButton/sysRadioButton';
-import { SysCheckBox } from '/imports/ui/components/sysFormFields/sysCheckBoxField/sysCheckBoxField';
 import SysFormButton from '/imports/ui/components/sysFormFields/sysFormButton/sysFormButton';
-import { SysUploadFile } from '/imports/ui/components/sysFormFields/sysUploadFile/sysUploadFile';
-import SysSlider from '/imports/ui/components/sysFormFields/sysSlider/sysSliderField';
 import SysSwitch from '/imports/ui/components/sysFormFields/sysSwitch/sysSwitch';
-import { SysLocationField } from '/imports/ui/components/sysFormFields/sysLocationField/sysLocationField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import ButtonBase from '@mui/material/ButtonBase';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
+import Box from '@mui/material/Box';
 
 const ToDosDetailView = () => {
-	const controller = useContext(ToDosDetailControllerContext);
-	const { state } = useContext(ToDosModuleContext);
+	const context = useContext<IToDosDetailContext>(ToDosDetailContext);
+	const open = Boolean(context.anchorEl);
+	const { state } = useContext<IToDosModuleContext>(ToDosModuleContext);
 	const isView = state === 'view';
 	const isEdit = state === 'edit';
 	const isCreate = state === 'create';
+	const ehConcluida = context.document.situacao === 'Concluída';
   const {
     Container,
     Body,
@@ -33,28 +37,60 @@ const ToDosDetailView = () => {
 
 	return (
 		<Container>
-			<Header>
-				{isView && (
-					<IconButton onClick={controller.closePage}>
-						<SysIcon name={'arrowBack'} />
-					</IconButton>
-				)}
-				<Typography variant="h5" sx={{ flexGrow: 1 }}>
-					{isCreate ? 'Adicionar Item' : isEdit ? 'Editar Item' : controller.document.descricao}
+			<Header sx={isView? {justifyContent: "flex-end"}: {}}>
+				{isView? (
+					<>
+						<IconButton
+							onClick={!isView ? context.closePage : context.openMenu}>
+							{!isView ? <SysIcon name={'close'} /> : (
+								<>
+								<ButtonBase>
+									<SysIcon name={"moreVert"}/>
+								</ButtonBase>
+								<Menu open={open} onClose={context.closeMenu} anchorEl={context.anchorEl}>
+									<MenuItem onClick={() => context.changeToEdit(context.document._id || '')}>
+										<SysIcon name={"edit"} />
+										Editar
+									</MenuItem>
+									<MenuItem onClick={() => context.onDeleteButtonClick(context.task)}>
+										<SysIcon name={"delete"} />
+										Excluir
+									</MenuItem>
+								</Menu>
+								</>
+							)}
+						</IconButton>
+						<IconButton onClick={context.closePage}>
+							<SysIcon name={'close'} />
+						</IconButton>
+					</>
+				): (<></>)
+				}
+				<Typography variant="h5">
+					{isCreate ? 'Adicionar Item' : isEdit ? 'Editar Item' : ""}
 				</Typography>
-				<IconButton
-					onClick={!isView ? controller.closePage : () => controller.changeToEdit(controller.document._id || '')}>
-					{!isView ? <SysIcon name={'close'} /> : <SysIcon name={'edit'} />}
-				</IconButton>
+				{!isView? (
+					<IconButton onClick={context.closePage}>
+						{<SysIcon name={'close'} />}
+					</IconButton>
+				): (<></>)
+				}
 			</Header>
 			<SysForm
 				mode={state as 'create' | 'view' | 'edit'}
-				schema={controller.schema}
-				doc={controller.document}
-				onSubmit={controller.onSubmit}
-				loading={controller.loading}>
+				schema={context.schema}
+				doc={context.document}
+				onSubmit={context.onSubmit}
+				loading={context.loading}>
 				<Body>
 					<FormColumn>
+						{state == "view"? (
+							<FormControlLabel control={<Checkbox checked={ehConcluida} />} label={
+								<Typography variant="body1">{context.document.titulo}</Typography>
+							}/>
+						): (
+							<SysTextField name='titulo' />
+						)}
 						<SysTextField
 							name="descricao"
 							placeholder="Acrescente informações sobre a tarefa (3 linhas)"
@@ -64,15 +100,29 @@ const ToDosDetailView = () => {
 							showNumberCharactersTyped
 							max={200}
 						/>
-						<SysSelectField name="situacao" placeholder="Selecionar" />
-						<SysSwitch name="ehTarefaPessoal" label="Tipo" />
+						{ !isView && (
+								<SysSelectField name="situacao" placeholder="Selecionar" sx={{display: "none"}}/>
+							)
+						}
+						<SysSwitch name="ehTarefaPessoal" label="É tarefa pessoal?" />
 					</FormColumn>
 				</Body>
-				<Footer>
-					{!isView && (
-						<Button variant="outlined" startIcon={<SysIcon name={'close'} />} onClick={controller.closePage}>
+				<Footer sx={{"flexDirection": "column"}}>
+					{!isView? (
+						<Button variant="outlined" startIcon={<SysIcon name={'close'} />} onClick={context.closePage}>
 							Cancelar
 						</Button>
+					) : (
+						<>
+							<SysButton onClick={() => context.changeToEdit(context.document._id || '')}>
+								Editar
+							</SysButton>
+							<Box display={"flex"}>
+								<Typography variant='body1'>
+									Criado por {context.task?.owner}
+								</Typography>
+							</Box>
+						</>
 					)}
 					<SysFormButton>Salvar</SysFormButton>
 				</Footer>

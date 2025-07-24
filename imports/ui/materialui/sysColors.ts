@@ -124,8 +124,8 @@ const sysLightPalette: PaletteOptions = {
 
   primary: {
     light: sysPurpleColors[70],
-    main: sysPurpleColors[50]!,
-    dark: sysPurpleColors[30],
+    main: sysBlueColors[50]!,
+    dark: sysNeonColors[70],
     contrastText: sysCommonColors.white
   },
 
@@ -200,7 +200,7 @@ const sysLightPalette: PaletteOptions = {
     bg3: sysGreyColors[90],
   },
   sysAction: {
-    primary: sysPurpleColors[50],
+    primary: sysNeonColors[70],
     primaryHover: sysPurpleColors[30],
     primaryBgHover: sysPurpleColors.transparent,
     primaryIcon: sysPurpleColors.grey,

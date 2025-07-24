@@ -3,18 +3,25 @@ import { ISchema } from '/imports/typings/ISchema';
 
 export const toDosSch: ISchema<IToDos> = {
 	
+	titulo: {
+		type: String,
+		label: 'Título',
+		defaultValue: '',
+		optional: false,
+	},
+
 	descricao: {
 		type: String,
 		label: 'Descrição',
 		defaultValue: '',
-		optional: false
+		optional: true,
 	},
 	
 	situacao: {
 		type: String,
-		label: 'Situação',
 		defaultValue: 'Não Concluída',
 		optional: false,
+		// visibilityFunction: () => false,
 		options: () => [
 			{ value: 'Não Concluída', label: 'Não Concluída' },
 			{ value: 'Concluída', label: 'Concluída' },
@@ -58,6 +65,7 @@ export const toDosSch: ISchema<IToDos> = {
 };
 
 export interface IToDos extends IDoc {
+	titulo: string;
 	descricao: string;
 	situacao: string;
 	ehTarefaPessoal: boolean;

@@ -4,6 +4,7 @@ import { toDosSch, IToDos } from './toDosSch';
 import { userprofileServerApi } from '/imports/modules/userprofile/api/userProfileServerApi';
 import { ProductServerBase } from '/imports/api/productServerBase';
 import { IUserProfile } from '../../userprofile/api/userProfileSch';
+import { Meteor } from 'meteor/meteor';
 import { IMeteorUser } from 'imports/modules/userprofile/api/userProfileSch';
 import User = Meteor.User;
 import { String } from 'lodash';
@@ -26,11 +27,15 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 			(filter = {}, options = {}) => {
 				return this.defaultListCollectionPublication(filter, {
 					...options,
-					projection: { descricao: 1, situacao: 1, createdat: 1, createdby: 1, lastupdate: 1, ehTarefaPessoal: 1, owner: 1 }
+					projection: { titulo: 1, descricao: 1, situacao: 1, createdat: 1, createdby: 1, lastupdate: 1, ehTarefaPessoal: 1, owner: 1 }
 				});
 			},
 			async (doc: IToDos & { nomeUsuario: string }) => {
 				const userProfileDoc: (Partial<IUserProfile>) = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
+				const user: (User | IMeteorUser) | null = await Meteor.userAsync();
+				if ((userProfileDoc && user) && (userProfileDoc.username == user.username)){
+					return { ...doc, owner: "Você" };
+				}
 				return { ...doc, owner: userProfileDoc?.username || 'Usuário Desconhecido' };
 			}
 		);
@@ -38,6 +43,7 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 		this.addPublication('toDosDetail', (filter = {}) => {
 			return this.defaultDetailCollectionPublication(filter, {
 				projection: {
+					titulo: 1,
 					descricao: 1,
 					situacao: 1,
 					ehTarefaPessoal: 1,

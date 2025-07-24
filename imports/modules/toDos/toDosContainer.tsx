@@ -2,7 +2,7 @@ import React from 'react';
 import { IDefaultContainerProps } from '/imports/typings/BoilerplateDefaultTypings';
 import { useParams } from 'react-router-dom';
 import ToDosListController from '/imports/modules/toDos/pages/toDosList/toDosListController';
-import ToDosDetailController from '/imports/modules/toDos/pages/toDosDetail/toDosDetailContoller';
+import ToDosDetailController from './pages/toDosDetail/toDosDetailController';
 
 export interface IToDosModuleContext {
 	state?: string;

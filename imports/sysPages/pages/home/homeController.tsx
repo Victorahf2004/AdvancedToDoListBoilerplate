@@ -3,9 +3,11 @@ import { HomeView } from './homeView';
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
-import { ISchema } from '/imports/typings/ISchema';
-import { IToDos } from '../../../modules/toDos/api/toDosSch';
 import { toDosApi } from '../../../modules/toDos/api/toDosApi';
+import { useContext } from 'react';
+import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
+import AppLayoutContext from '/imports/app/appLayoutProvider/appLayoutContext';
+import Context, { IHomeContext } from './homeContext';
 
 interface IInitialConfig {
     sortProperties: { field: string; sortAscending: boolean };
@@ -14,20 +16,6 @@ interface IInitialConfig {
     viewComplexTable: boolean;
     nome: String;
 }
-
-interface IHomeContollerContext {
-    onAddButtonClick: () => void;
-    onDeleteButtonClick: (row: any) => void;
-    onTaskButtonClick: () => void;
-    todoList: IToDos[];
-    loading: boolean;
-    onChangeTextField: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onChangeCategory: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export const HomeControllerContext = React.createContext<IHomeContollerContext>(
-    {} as IHomeContollerContext
-);
 
 const initialConfig = {
     sortProperties: { field: 'createdat', sortAscending: true },
@@ -42,6 +30,7 @@ const HomeController = () => {
 
     const navigate = useNavigate();
 
+    const { showNotification } = useContext(AppLayoutContext);
     const { sortProperties, filter, nome } = config;
     const sort = {
         [sortProperties.field]: sortProperties.sortAscending ? 1 : -1
@@ -66,11 +55,28 @@ const HomeController = () => {
         const newDocumentId = nanoid();
         navigate(`/toDos/create/${newDocumentId}`);
     }, []);
-
-    const onDeleteButtonClick = useCallback((row: any) => {
-        toDosApi.remove(row);
+    const onEditButtonClick = useCallback((task: any) => {
+            navigate('/toDos/edit/' + task._id);
     }, []);
-
+    
+    const onDeleteButtonClick = useCallback((task: any) => {
+        toDosApi.remove(task, (e: IMeteorError) => {
+            if (!e) {
+                showNotification({
+                    type: 'success',
+                    title: 'Tarefa excluída!',
+                    message: `A tarefa ${task.title} foi excluída com sucesso!`
+                });
+            }
+            else {
+                showNotification({
+                    type: 'error',
+                    title: 'Erro ao excluir tarefa',
+                    message: e.reason || 'Ocorreu um erro ao tentar excluir a tarefa.'
+                });
+            }
+        });
+    }, []);
     const onChangeTextField = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         const delayedSearch = setTimeout(() => {
@@ -97,10 +103,11 @@ const HomeController = () => {
         setConfig((prev) => ({ ...prev, filter: { ...prev.filter, type: value } }));
     }, []);
 
-    const providerValues: IHomeContollerContext = useMemo(
+    const providerValues: IHomeContext = useMemo(
         () => ({
             onAddButtonClick,
             onDeleteButtonClick,
+            onEditButtonClick,
             onTaskButtonClick,
             todoList: toDos,
             loading,
@@ -111,9 +118,9 @@ const HomeController = () => {
     );
 
     return (
-        <HomeControllerContext.Provider value={providerValues}>
+        <Context.Provider value={providerValues}>
             <HomeView />
-        </HomeControllerContext.Provider>
+        </Context.Provider>
     );
 };
 

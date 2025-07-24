@@ -6,16 +6,16 @@ import ToDos from './toDos/config';
 
 const pages: Array<IRoute | null> = [
 	...ToDos.pagesRouterList,
-	...Example.pagesRouterList, 
-	...Aniversario.pagesRouterList, 
-	...UserProfile.pagesRouterList
+	// ...Example.pagesRouterList, 
+	// ...Aniversario.pagesRouterList, 
+	// ...UserProfile.pagesRouterList
 ];
 
 const menuItens: Array<IAppMenu | null> = [
 	...ToDos.pagesMenuItemList,
-	...Example.pagesMenuItemList, 
-	...Aniversario.pagesMenuItemList,
-	...UserProfile.pagesMenuItemList
+	// ...Example.pagesMenuItemList, 
+	// ...Aniversario.pagesMenuItemList,
+	// ...UserProfile.pagesMenuItemList
 ];
 
 const Modules: IModuleHub = {

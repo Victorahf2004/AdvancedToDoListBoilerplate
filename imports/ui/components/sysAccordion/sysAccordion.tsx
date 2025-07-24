@@ -19,7 +19,7 @@ interface ISysAccordion {
 	/** O título do painel. */
 	titulo: string;
 	/** O conteúdo do painel. */
-	conteudo: string;
+	conteudo: React.ReactNode;
 	/** O ícone de expansão do painel. */
 	expandIcon?: React.ReactNode;
 	/** Indica se o painel está aberto ou fechado. */
@@ -93,7 +93,8 @@ export const SysAccordion: React.FC<ISysAccordion> = ({
 				</AccordionSummary>
 
 				<AccordionDetails sx={sxMap?.acordionDetail}>
-					<Typography variant="body1">{conteudo}</Typography>
+					{/* <Typography variant="body1">{conteudo}</Typography> */}
+					{conteudo}
 				</AccordionDetails>
 
 				<AccordionActions sx={sxMap?.acordionActions}>
