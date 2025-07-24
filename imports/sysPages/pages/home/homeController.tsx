@@ -65,7 +65,7 @@ const HomeController = () => {
                 showNotification({
                     type: 'success',
                     title: 'Tarefa excluída!',
-                    message: `A tarefa ${task.title} foi excluída com sucesso!`
+                    message: `A tarefa foi excluída com sucesso!`
                 });
             }
             else {

@@ -35,7 +35,7 @@ export const HomeView: React.FC = () => {
                 </>
             ): context.todoList.length == 1? (
                 <>
-                    <Box display={"flex"} flexDirection={"row"} gap={"3vw"} width={"100%"}>
+                    <Box display={"flex"} flexDirection={{ xs: 'column', md: 'row' }} gap={"3vw"} width={"100%"}>
                         <Typography variant="h3"> Adicionadas Recentemente</Typography>
                         <SysTaskListController tasks={[context.todoList[0]]} telaInicial={true} onEdit={context.onEditButtonClick} onDelete={context.onDeleteButtonClick}/>
                     </Box>
